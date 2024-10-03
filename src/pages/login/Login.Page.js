@@ -12,8 +12,12 @@ import {
   Container,
   createTheme,
   ThemeProvider,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff"; // Import the visibility off icon
 
 import avatar from "./../../assets/logo.png";
 import { authenticateUserThunk } from "./Login.Thunk";
@@ -27,6 +31,7 @@ function LoginPage() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
   const loading = useSelector((state) => state.LoginSlice.loading);
   const message = useSelector((state) => state.LoginSlice.message);
 
@@ -46,7 +51,7 @@ function LoginPage() {
 
   const login_button_click = async () => {
     if (!email) {
-      showToast("Please enter a valid emailid");
+      showToast("Please enter a valid email id");
     } else if (!password) {
       showToast("Please enter a valid password");
     } else {
@@ -161,13 +166,26 @@ function LoginPage() {
                 id="password"
                 label="Password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"} // Toggle password visibility
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 margin="normal"
                 required
                 fullWidth
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword((prev) => !prev)} // Toggle state
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <div className="text-center text-md-start mt-4 pt-2">
                 <Button
