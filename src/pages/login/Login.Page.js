@@ -135,9 +135,7 @@ function LoginPage() {
           <CssBaseline />
           <Box className="login-box">
             <Box className="avatar-container">
-              <Avatar
-                sx={{ m: 1, bgcolor: "secondary.main", width: 42, height: 42 }}
-              >
+              <Avatar sx={{ m: 1, bgcolor: "#3f51b5", width: 42, height: 42 }}>
                 <Avatar alt="Logo" src={avatar} />
               </Avatar>
             </Box>

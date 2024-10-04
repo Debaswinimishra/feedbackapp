@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoginPage from "../pages/login/Login.Page";
+import StudentFeedback from "../pages/studentFeedback/StudentFeedback.Page";
 
 import { Version } from "../api/api";
 
@@ -18,6 +19,12 @@ function AppRoute({ loggedin }) {
       {!loggedin && (
         <>
           <Route path="/login" element={<LoginPage />} />
+        </>
+      )}
+      {loggedin && (
+        <>
+          <Route exact path="/" element={<StudentFeedback />} />
+          <Route path="/home" element={<StudentFeedback />} />
         </>
       )}
 

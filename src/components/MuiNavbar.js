@@ -65,9 +65,7 @@ function MuiNavbar() {
             onClick={handleMenuClick}
           >
             {/* Profile */}
-            <Avatar
-              sx={{ m: 1, bgcolor: "secondary.main", width: 37, height: 37 }}
-            >
+            <Avatar sx={{ m: 1, bgcolor: "#3f51b5", width: 37, height: 37 }}>
               <AccountCircleIcon />
             </Avatar>
           </Button>
