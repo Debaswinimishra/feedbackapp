@@ -3,14 +3,69 @@ import React, { useState } from "react";
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [activeTab, setActiveTab] = useState("1-15");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
 
   const classOptions = [1, 2, 3, 4, 5];
+  const yearOptions = [2024, 2023];
+  const monthOptions = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const handleClassChange = (e) => setSelectedClass(e.target.value);
-  const handleTabChange = (tab) => setActiveTab(tab); // Switch tab
+  const handleYearChange = (e) => setSelectedYear(e.target.value);
+  const handleMonthChange = (e) => setSelectedMonth(e.target.value);
+  const handleTabChange = (tab) => setActiveTab(tab);
 
   return (
     <div style={styles.container}>
+      <div style={styles.dropdownContainer}>
+        <label style={styles.label}>Select Year:</label>
+        <select
+          style={styles.dropdown}
+          value={selectedYear}
+          onChange={handleYearChange}
+        >
+          <option value="" disabled>
+            --Select Year--
+          </option>
+          {yearOptions.map((yearOption) => (
+            <option key={yearOption} value={yearOption}>
+              {yearOption}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={styles.dropdownContainer}>
+        <label style={styles.label}>Select Month:</label>
+        <select
+          style={styles.dropdown}
+          value={selectedMonth}
+          onChange={handleMonthChange}
+        >
+          <option value="" disabled>
+            --Select Month--
+          </option>
+          {monthOptions.map((monthOption, index) => (
+            <option key={index} value={monthOption}>
+              {monthOption}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div style={styles.tabContainer}>
         <button
           style={
@@ -83,7 +138,7 @@ const styles = {
     borderRadius: "0px",
     textAlign: "center",
     transition: "background-color 0.3s ease",
-    margin: "0 10px", // Add margin to create gap between tabs
+    margin: "0 10px",
   },
   activeTab: {
     backgroundColor: "#3f51b5",
