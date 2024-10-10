@@ -1,32 +1,57 @@
 import React, { useState } from "react";
+import {
+  getStudentListForFeedback,
+  getAllFeedbackQuestions,
+  saveFeedback,
+} from "./StudentFeedback.Api";
 
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
-  const [activeTab, setActiveTab] = useState("1-15");
+  const [activeTab, setActiveTab] = useState(1);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
+  const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
   const yearOptions = [2024, 2023];
   const monthOptions = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    { value: 1, label: "January" },
+    { value: 2, label: "February" },
+    { value: 3, label: "March" },
+    { value: 4, label: "April" },
+    { value: 5, label: "May" },
+    { value: 6, label: "June" },
+    { value: 7, label: "July" },
+    { value: 8, label: "August" },
+    { value: 9, label: "September" },
+    { value: 10, label: "October" },
+    { value: 11, label: "November" },
+    { value: 12, label: "December" },
   ];
 
-  const handleClassChange = (e) => setSelectedClass(e.target.value);
-  const handleYearChange = (e) => setSelectedYear(e.target.value);
-  const handleMonthChange = (e) => setSelectedMonth(e.target.value);
+  const handleYearChange = (e) => {
+    setSelectedYear(e.target.value);
+    setSelectedMonth("");
+    setSelectedClass("");
+  };
+  const handleMonthChange = (e) => {
+    setSelectedMonth(e.target.value);
+    setSelectedClass("");
+  };
   const handleTabChange = (tab) => setActiveTab(tab);
+
+  const handleClassChange = (e) => {
+    setSelectedClass(e.target.value);
+    getAllFeedbackQuestions()
+      .then((res) => {
+        if (res.status === 200) {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.error("The error is -------->", error);
+      });
+  };
 
   return (
     <div style={styles.container}>
@@ -58,32 +83,33 @@ const StudentFeedback = () => {
           <option value="" disabled>
             --Select Month--
           </option>
-          {monthOptions.map((monthOption, index) => (
-            <option key={index} value={monthOption}>
-              {monthOption}
-            </option>
-          ))}
+          {selectedYear &&
+            monthOptions.map((monthOption, index) => (
+              <option key={index} value={monthOption.value}>
+                {monthOption.label}
+              </option>
+            ))}
         </select>
       </div>
 
       <div style={styles.tabContainer}>
         <button
           style={
-            activeTab === "1-15"
+            activeTab === 1
               ? { ...styles.tab, ...styles.activeTab }
               : styles.tab
           }
-          onClick={() => handleTabChange("1-15")}
+          onClick={() => handleTabChange(1)}
         >
           Day 1-15
         </button>
         <button
           style={
-            activeTab === "16-30"
+            activeTab === 2
               ? { ...styles.tab, ...styles.activeTab }
               : styles.tab
           }
-          onClick={() => handleTabChange("16-30")}
+          onClick={() => handleTabChange(2)}
         >
           Day 16-30
         </button>
@@ -99,11 +125,13 @@ const StudentFeedback = () => {
           <option value="" disabled>
             --Select Class--
           </option>
-          {classOptions.map((classOption) => (
-            <option key={classOption} value={classOption}>
-              Class {classOption}
-            </option>
-          ))}
+          {selectedYear &&
+            selectedMonth &&
+            classOptions.map((classOption) => (
+              <option key={classOption} value={classOption}>
+                Class {classOption}
+              </option>
+            ))}
         </select>
       </div>
     </div>
