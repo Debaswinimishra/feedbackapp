@@ -43,6 +43,8 @@ const StudentFeedback = () => {
 
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
+
+    getStudentListForFeedback();
     getAllFeedbackQuestions()
       .then((res) => {
         if (res.status === 200) {
