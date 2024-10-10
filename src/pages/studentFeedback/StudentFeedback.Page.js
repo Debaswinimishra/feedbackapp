@@ -11,6 +11,7 @@ const StudentFeedback = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [questions, setQuestions] = useState([]);
+  const [studentData, setStudentData] = useState([]);
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
@@ -44,7 +45,14 @@ const StudentFeedback = () => {
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
 
-    getStudentListForFeedback();
+    const data = {
+      year: selectedYear,
+      month: selectedMonth,
+      clas: selectedClass,
+      biweek: activeTab,
+      consultantId: userId,
+    };
+    getStudentListForFeedback(data);
     getAllFeedbackQuestions()
       .then((res) => {
         if (res.status === 200) {
