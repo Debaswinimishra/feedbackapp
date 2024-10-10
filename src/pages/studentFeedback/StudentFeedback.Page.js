@@ -10,6 +10,7 @@ const StudentFeedback = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [questions, setQuestions] = useState([]);
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
@@ -45,7 +46,9 @@ const StudentFeedback = () => {
     getAllFeedbackQuestions()
       .then((res) => {
         if (res.status === 200) {
+          setQuestions(res.data);
         } else {
+          alert("No data is found for the selected fields!");
         }
       })
       .catch((error) => {
