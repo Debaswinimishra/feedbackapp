@@ -48,7 +48,7 @@ const StudentFeedback = () => {
     const data = {
       year: selectedYear,
       month: selectedMonth,
-      clas: selectedClass,
+      clas: e.target.value,
       biweek: activeTab,
       consultantId: userId,
     };
