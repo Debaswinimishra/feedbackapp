@@ -46,7 +46,7 @@ function LoginPage() {
   }
 
   useEffect(() => {
-    console.log(message);
+    console.log("useEffect: ", message);
   }, [message]);
 
   const login_button_click = async () => {
@@ -66,10 +66,12 @@ function LoginPage() {
         console.log("response========>", response);
 
         if (response.status === 200) {
+          console.log("if");
           // Successful login
           showToast("Login successful");
           // Perform further actions, like redirecting the user
         } else {
+          console.log("else");
           // Handle other possible status codes
           showToast(response.message || "Invalid userid/ password");
         }
@@ -79,7 +81,7 @@ function LoginPage() {
       }
     }
   };
-
+  // test check
   const showToast = (message) => {
     toast.error(message);
   };

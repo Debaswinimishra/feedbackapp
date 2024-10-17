@@ -137,7 +137,7 @@ const LoginSlice = createSlice({
           }
         } else {
           state.loggedin = false;
-          state.message = "Invalid userid/ password";
+          state.message = "You have entered invalid userid/ password";
           localStorage.clear();
         }
       })
