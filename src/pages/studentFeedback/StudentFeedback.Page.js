@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import {
-  getStudentListForFeedback,
-  getAllFeedbackQuestions,
-  saveFeedback,
-} from "./StudentFeedback.Api";
+import Swal from "sweetalert2";
 
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [activeTab, setActiveTab] = useState(1);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [questions, setQuestions] = useState([]);
-  const [studentData, setStudentData] = useState([]);
+  const [gkQuestions, setGkQuestions] = useState([]);
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
@@ -31,39 +26,46 @@ const StudentFeedback = () => {
     { value: 12, label: "December" },
   ];
 
+  const dummyQuestions = [
+    { id: 1, text: "Is the sky blue?" },
+    { id: 2, text: "Do fish swim?" },
+    { id: 3, text: "Is the earth round?" },
+  ];
+
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
     setSelectedMonth("");
     setSelectedClass("");
+    setGkQuestions([]);
   };
+
   const handleMonthChange = (e) => {
     setSelectedMonth(e.target.value);
     setSelectedClass("");
+    setGkQuestions([]);
   };
+
   const handleTabChange = (tab) => setActiveTab(tab);
 
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
+    setGkQuestions(dummyQuestions); // Set dummy GK questions directly
+  };
 
-    const data = {
-      year: selectedYear,
-      month: selectedMonth,
-      clas: e.target.value,
-      biweek: activeTab,
-      consultantId: userId,
-    };
-    getStudentListForFeedback(data);
-    getAllFeedbackQuestions()
-      .then((res) => {
-        if (res.status === 200) {
-          setQuestions(res.data);
-        } else {
-          alert("No data is found for the selected fields!");
-        }
-      })
-      .catch((error) => {
-        console.error("The error is -------->", error);
-      });
+  const handleSubmit = () => {
+    Swal.fire({
+      title: "Quiz Submitted Successfully!",
+      icon: "success",
+      toast: true,
+      position: "top-end",
+      timer: 3000,
+      showConfirmButton: false,
+    });
+
+    setSelectedClass("");
+    setSelectedYear("");
+    setSelectedMonth("");
+    setGkQuestions([]);
   };
 
   return (
@@ -147,6 +149,52 @@ const StudentFeedback = () => {
             ))}
         </select>
       </div>
+
+      {/* Show GK questions after class is selected */}
+      {selectedYear &&
+        selectedMonth &&
+        selectedClass &&
+        gkQuestions.length > 0 && (
+          <div style={styles.questionsContainer}>
+            {gkQuestions.map((question, index) => (
+              <div key={question.id} style={styles.question}>
+                <p style={styles.questionText}>
+                  {index + 1}. {question.text}
+                </p>
+                <div style={styles.radioGroup}>
+                  <label style={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name={`question-${question.id}`}
+                      value="yes"
+                      style={styles.radioInput}
+                    />{" "}
+                    Yes
+                  </label>
+                  <label style={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name={`question-${question.id}`}
+                      value="no"
+                      style={styles.radioInput}
+                    />{" "}
+                    No
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      {/* Submit Button */}
+      {selectedYear &&
+        selectedMonth &&
+        selectedClass &&
+        gkQuestions.length > 0 && (
+          <button style={styles.submitButton} onClick={handleSubmit}>
+            Submit Feedback
+          </button>
+        )}
     </div>
   );
 };
@@ -205,6 +253,45 @@ const styles = {
     outline: "none",
     boxSizing: "border-box",
   },
+  questionsContainer: {
+    marginTop: "20px",
+    width: "100%",
+  },
+  question: {
+    marginBottom: "20px",
+    padding: "15px",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#f9f9f9",
+  },
+  questionText: {
+    fontSize: "16px",
+    marginBottom: "10px",
+    color: "#333",
+  },
+  radioGroup: {
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  radioLabel: {
+    fontSize: "16px",
+    color: "#555",
+    marginRight: "30px",
+  },
+  radioInput: {
+    marginRight: "5px",
+  },
+  submitButton: {
+    marginTop: "20px",
+    padding: "10px 20px",
+    backgroundColor: "#e0f7fa",
+    border: "2px solid #3f51b5",
+    color: "black",
+    fontSize: "16px",
+    cursor: "pointer",
+    borderRadius: "5px",
+    transition: "background-color 0.3s ease",
+  },
   "@media (max-width: 600px)": {
     tab: {
       padding: "12px",
@@ -215,6 +302,13 @@ const styles = {
       fontSize: "14px",
     },
     label: {
+      fontSize: "14px",
+    },
+    questionText: {
+      fontSize: "14px",
+    },
+    submitButton: {
+      padding: "8px 15px",
       fontSize: "14px",
     },
   },
