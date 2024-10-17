@@ -399,6 +399,8 @@ const styles = {
   userIdText: {
     marginBottom: "20px",
     fontWeight: "bold",
+    fontSize: "17px",
+    marginTop: "-15px",
   },
   // Responsive styles
   "@media (max-width: 600px)": {
