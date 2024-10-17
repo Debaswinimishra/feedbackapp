@@ -61,15 +61,21 @@ function LoginPage() {
       };
 
       try {
-        await dispatch(authenticateUserThunk(user));
+        // Dispatch the login action and wait for the response
+        const response = await dispatch(authenticateUserThunk(user)); // Assuming unwrap to extract payload from thunk
+        console.log("response========>", response);
 
-        if (loggedin === false) {
-          showToast("Invalid userid/ password");
+        if (response.status === 200) {
+          // Successful login
+          showToast("Login successful");
+          // Perform further actions, like redirecting the user
         } else {
-          showToast(message);
+          // Handle other possible status codes
+          showToast(response.message || "Invalid userid/ password");
         }
       } catch (error) {
         console.error("Authentication error:", error);
+        showToast("An error occurred. Please try again.");
       }
     }
   };
@@ -86,20 +92,25 @@ function LoginPage() {
     margin: 0;
     padding: 0;
     background-color: #e0f7fa; /* Light blue background */
+    height: 100vh; /* Ensure the body takes the full viewport height */
+    overflow: hidden; /* Prevent scrolling */
   }
   .login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 100vh; /* Take full height of the viewport */
     background-color: #e0f7fa; /* Same light blue background */
+    overflow: hidden; /* Prevent scrolling in container */
   }
   .login-box {
     background: white;
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%; /* Ensure the box is responsive */
   }
   .avatar-container {
     display: flex; /* Added to center the avatar */
