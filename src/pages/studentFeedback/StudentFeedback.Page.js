@@ -7,6 +7,7 @@ const StudentFeedback = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [gkQuestions, setGkQuestions] = useState([]);
+  const [answers, setAnswers] = useState({}); // To track answers
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
@@ -32,47 +33,74 @@ const StudentFeedback = () => {
     { id: 3, text: "Is the earth round?" },
   ];
 
-  const currentYear = new Date().getFullYear(); //To track my current year
-  const currentMonth = new Date().getMonth(); //To track my current month
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
     setSelectedMonth("");
     setSelectedClass("");
     setGkQuestions([]);
+    setAnswers({});
   };
 
   const handleMonthChange = (e) => {
     if (selectedYear == currentYear && e.target.value > currentMonth + 1) {
-      alert("You can't select a month beyond the current month !");
+      alert("You can't select a month beyond the current month!");
     } else {
       setSelectedMonth(e.target.value);
       setSelectedClass("");
     }
     setGkQuestions([]);
+    setAnswers({});
   };
 
   const handleTabChange = (tab) => setActiveTab(tab);
 
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
-    setGkQuestions(dummyQuestions); // Set dummy GK questions directly
+    setGkQuestions(dummyQuestions);
+    setAnswers({});
+  };
+
+  const handleAnswerChange = (questionId, answer) => {
+    setAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: answer,
+    }));
   };
 
   const handleSubmit = () => {
-    Swal.fire({
-      title: "Quiz Submitted Successfully!",
-      icon: "success",
-      toast: true,
-      position: "top-end",
-      timer: 3000,
-      showConfirmButton: false,
-    });
+    // Check if all questions have been answered
+    const allAnswered = gkQuestions.every(
+      (question) => answers[question.id] !== undefined
+    );
 
-    setSelectedClass("");
-    setSelectedYear("");
-    setSelectedMonth("");
-    setGkQuestions([]);
+    if (!allAnswered) {
+      Swal.fire({
+        title: "Please answer all questions!",
+        icon: "warning",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        title: "Quiz Submitted Successfully!",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+
+      setSelectedClass("");
+      setSelectedYear("");
+      setSelectedMonth("");
+      setGkQuestions([]);
+      setAnswers({});
+    }
   };
 
   return (
@@ -174,6 +202,7 @@ const StudentFeedback = () => {
                       type="radio"
                       name={`question-${question.id}`}
                       value="yes"
+                      onChange={() => handleAnswerChange(question.id, "yes")}
                       style={styles.radioInput}
                     />{" "}
                     Yes
@@ -183,6 +212,7 @@ const StudentFeedback = () => {
                       type="radio"
                       name={`question-${question.id}`}
                       value="no"
+                      onChange={() => handleAnswerChange(question.id, "no")}
                       style={styles.radioInput}
                     />{" "}
                     No
