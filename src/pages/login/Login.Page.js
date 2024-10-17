@@ -193,7 +193,7 @@ function LoginPage() {
                   className="login-button"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In here
+                  Sign In
                 </Button>
               </div>
             </Box>
