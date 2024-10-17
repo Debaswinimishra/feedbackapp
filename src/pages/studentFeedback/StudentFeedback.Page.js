@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import Swal from "sweetalert2";
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [activeTab, setActiveTab] = useState(1);
@@ -8,7 +8,7 @@ const StudentFeedback = () => {
   const [gkQuestions, setGkQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [selectedStudent, setSelectedStudent] = useState("");
-  const [showPopup, setShowPopup] = useState(false); // State for popup
+
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
@@ -96,20 +96,31 @@ const StudentFeedback = () => {
     );
 
     if (!allAnswered) {
-      alert("Please answer all questions!");
+      Swal.fire({
+        title: "Incomplete Submission",
+        text: "Please answer all questions!",
+        icon: "warning",
+        confirmButtonColor: "#3f51b5",
+        confirmButtonText: "OK",
+      });
     } else {
-      setShowPopup(true); // Show the popup
-      setSelectedClass("");
-      setSelectedYear("");
-      setSelectedMonth("");
-      setGkQuestions([]);
-      setAnswers({});
-      setSelectedStudent(""); // Reset student selection
-    }
-  };
+      Swal.fire({
+        title: "Success",
+        text: "Quiz Submitted Successfully!",
+        icon: "success",
+        confirmButtonColor: "#3f51b5",
+        confirmButtonText: "OK",
+      }).then(() => {
+        // Reset the form after submission
 
-  const closePopup = () => {
-    setShowPopup(false);
+        setSelectedClass("");
+        setSelectedYear("");
+        setSelectedMonth("");
+        setGkQuestions([]);
+        setAnswers({});
+        setSelectedStudent(""); // Reset student selection
+      });
+    }
   };
 
   return (
@@ -260,17 +271,6 @@ const StudentFeedback = () => {
             Submit Feedback
           </button>
         )}
-
-      {showPopup && (
-        <div style={styles.popupOverlay}>
-          <div style={styles.popup}>
-            <p>Quiz Submitted Successfully!</p>
-            <button style={styles.okButton} onClick={closePopup}>
-              OK
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
