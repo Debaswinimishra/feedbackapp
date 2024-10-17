@@ -37,12 +37,12 @@ function LoginPage() {
 
   const loggedin = useSelector((state) => state.LoginSlice.loggedin);
   const [toastShown, setToastShown] = useState(false);
-  console.log("loggedin---------->", loggedin);
+  // console.log("loggedin---------->", loggedin);
 
   if (!localStorage.getItem("uniqueId")) {
     const newUuid = uuidv4();
     localStorage.setItem("uniqueId", newUuid);
-    console.log("New UUID generated and set:", newUuid);
+    // console.log("New UUID generated and set:", newUuid);
   }
 
   useEffect(() => {

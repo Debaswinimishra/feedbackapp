@@ -8,6 +8,11 @@ const StudentFeedback = () => {
   const [gkQuestions, setGkQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [selectedStudent, setSelectedStudent] = useState("");
+  const [studentOptions, setStudentOptions] = useState([
+    { id: 0, name: "Student A" },
+    { id: 1, name: "Student B" },
+    { id: 2, name: "Student C" },
+  ]);
 
   const userId = localStorage.getItem("userid");
 
@@ -28,11 +33,11 @@ const StudentFeedback = () => {
     { value: 12, label: "December" },
   ];
 
-  const studentOptions = [
-    { id: 1, name: "Student A" },
-    { id: 2, name: "Student B" },
-    { id: 3, name: "Student C" },
-  ];
+  // const studentOptions = [
+  //   { id: 1, name: "Student A" },
+  //   { id: 2, name: "Student B" },
+  //   { id: 3, name: "Student C" },
+  // ];
 
   const dummyQuestions = [
     { id: 1, text: "Is the sky blue?" },
@@ -89,7 +94,7 @@ const StudentFeedback = () => {
       [questionId]: answer,
     }));
   };
-
+  const [availableStudents, setAvailableStudents] = useState(studentOptions);
   const handleSubmit = () => {
     const allAnswered = gkQuestions.every(
       (question) => answers[question.id] !== undefined
@@ -111,11 +116,18 @@ const StudentFeedback = () => {
         confirmButtonColor: "#3f51b5",
         confirmButtonText: "OK",
       }).then(() => {
-        // Reset the form after submission
+        // Check if a student is selected
+        if (selectedStudent) {
+          // Remove the selected student from the student options
+          const updatedStudents = studentOptions.filter(
+            (student) => student.id !== parseInt(selectedStudent)
+          );
+          console.log("updatedStudents", updatedStudents);
 
+          setStudentOptions(updatedStudents); // Update student options
+        }
+        // Reset states after submission
         setSelectedClass("");
-        setSelectedYear("");
-        setSelectedMonth("");
         setGkQuestions([]);
         setAnswers({});
         setSelectedStudent(""); // Reset student selection
