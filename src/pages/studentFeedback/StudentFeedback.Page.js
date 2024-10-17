@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [activeTab, setActiveTab] = useState(1);
@@ -32,12 +33,6 @@ const StudentFeedback = () => {
     { value: 11, label: "November" },
     { value: 12, label: "December" },
   ];
-
-  // const studentOptions = [
-  //   { id: 1, name: "Student A" },
-  //   { id: 2, name: "Student B" },
-  //   { id: 3, name: "Student C" },
-  // ];
 
   const dummyQuestions = [
     { id: 1, text: "Is the sky blue?" },
@@ -94,7 +89,7 @@ const StudentFeedback = () => {
       [questionId]: answer,
     }));
   };
-  const [availableStudents, setAvailableStudents] = useState(studentOptions);
+
   const handleSubmit = () => {
     const allAnswered = gkQuestions.every(
       (question) => answers[question.id] !== undefined
@@ -222,18 +217,24 @@ const StudentFeedback = () => {
       {selectedClass && (
         <div style={styles.dropdownContainer}>
           <label style={styles.label}>Select Student:</label>
-          <select
-            style={styles.dropdown}
-            value={selectedStudent}
-            onChange={handleStudentChange}
-          >
-            <option value="">--Select Student--</option>
-            {studentOptions.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.name}
-              </option>
-            ))}
-          </select>
+          {studentOptions.length > 0 ? (
+            <select
+              style={styles.dropdown}
+              value={selectedStudent}
+              onChange={handleStudentChange}
+            >
+              <option value="">--Select Student--</option>
+              {studentOptions.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <select style={styles.dropdown} disabled>
+              <option value="">No students available</option>
+            </select>
+          )}
         </div>
       )}
 
@@ -414,6 +415,7 @@ const styles = {
     fontSize: "17px",
     marginTop: "-15px",
   },
+
   // Responsive styles
   "@media (max-width: 600px)": {
     tab: {
