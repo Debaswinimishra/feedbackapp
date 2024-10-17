@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { logout } from "../pages/login/Login.Slice";
 
@@ -73,7 +74,7 @@ function MuiNavbar() {
               sx={{ m: 1, bgcolor: "#3f51b5", width: 37, height: 37 }}
               onClick={handleLogout}
             >
-              <AccountCircleIcon />
+              <LogoutIcon />
             </Avatar>
           </Button>
         </Stack>
