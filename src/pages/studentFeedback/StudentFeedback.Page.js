@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from "react";
 
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
@@ -7,7 +6,9 @@ const StudentFeedback = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [gkQuestions, setGkQuestions] = useState([]);
-  const [answers, setAnswers] = useState({}); // To track answers
+  const [answers, setAnswers] = useState({});
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [showPopup, setShowPopup] = useState(false); // State for popup
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
@@ -27,6 +28,12 @@ const StudentFeedback = () => {
     { value: 12, label: "December" },
   ];
 
+  const studentOptions = [
+    { id: 1, name: "Student A" },
+    { id: 2, name: "Student B" },
+    { id: 3, name: "Student C" },
+  ];
+
   const dummyQuestions = [
     { id: 1, text: "Is the sky blue?" },
     { id: 2, text: "Do fish swim?" },
@@ -34,7 +41,13 @@ const StudentFeedback = () => {
   ];
 
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth();
+  const currentMonth = new Date().getMonth() + 1; // Month is 0-indexed
+
+  useEffect(() => {
+    // Set the current year and month on component mount
+    setSelectedYear(currentYear);
+    setSelectedMonth(currentMonth);
+  }, [currentYear, currentMonth]);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -42,14 +55,16 @@ const StudentFeedback = () => {
     setSelectedClass("");
     setGkQuestions([]);
     setAnswers({});
+    setSelectedStudent(""); // Reset student selection
   };
 
   const handleMonthChange = (e) => {
-    if (selectedYear == currentYear && e.target.value > currentMonth + 1) {
+    if (selectedYear == currentYear && e.target.value > currentMonth) {
       alert("You can't select a month beyond the current month!");
     } else {
       setSelectedMonth(e.target.value);
       setSelectedClass("");
+      setSelectedStudent(""); // Reset student selection
     }
     setGkQuestions([]);
     setAnswers({});
@@ -61,6 +76,11 @@ const StudentFeedback = () => {
     setSelectedClass(e.target.value);
     setGkQuestions(dummyQuestions);
     setAnswers({});
+    setSelectedStudent(""); // Reset student selection
+  };
+
+  const handleStudentChange = (e) => {
+    setSelectedStudent(e.target.value);
   };
 
   const handleAnswerChange = (questionId, answer) => {
@@ -71,36 +91,25 @@ const StudentFeedback = () => {
   };
 
   const handleSubmit = () => {
-    // Check if all questions have been answered
     const allAnswered = gkQuestions.every(
       (question) => answers[question.id] !== undefined
     );
 
     if (!allAnswered) {
-      Swal.fire({
-        title: "Please answer all questions!",
-        icon: "warning",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false,
-      });
+      alert("Please answer all questions!");
     } else {
-      Swal.fire({
-        title: "Quiz Submitted Successfully!",
-        icon: "success",
-        toast: true,
-        position: "top-end",
-        timer: 3000,
-        showConfirmButton: false,
-      });
-
+      setShowPopup(true); // Show the popup
       setSelectedClass("");
       setSelectedYear("");
       setSelectedMonth("");
       setGkQuestions([]);
       setAnswers({});
+      setSelectedStudent(""); // Reset student selection
     }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
   };
 
   return (
@@ -185,10 +194,29 @@ const StudentFeedback = () => {
         </select>
       </div>
 
-      {/* Show GK questions after class is selected */}
+      {/* Show Student dropdown only after selecting a class */}
+      {selectedClass && (
+        <div style={styles.dropdownContainer}>
+          <label style={styles.label}>Select Student:</label>
+          <select
+            style={styles.dropdown}
+            value={selectedStudent}
+            onChange={handleStudentChange}
+          >
+            <option value="">--Select Student--</option>
+            {studentOptions.map((student) => (
+              <option key={student.id} value={student.id}>
+                {student.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {selectedYear &&
         selectedMonth &&
         selectedClass &&
+        selectedStudent &&
         gkQuestions.length > 0 && (
           <div style={styles.questionsContainer}>
             {gkQuestions.map((question, index) => (
@@ -223,15 +251,26 @@ const StudentFeedback = () => {
           </div>
         )}
 
-      {/* Submit Button */}
       {selectedYear &&
         selectedMonth &&
         selectedClass &&
+        selectedStudent &&
         gkQuestions.length > 0 && (
           <button style={styles.submitButton} onClick={handleSubmit}>
             Submit Feedback
           </button>
         )}
+
+      {showPopup && (
+        <div style={styles.popupOverlay}>
+          <div style={styles.popup}>
+            <p>Quiz Submitted Successfully!</p>
+            <button style={styles.okButton} onClick={closePopup}>
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -329,6 +368,34 @@ const styles = {
     borderRadius: "5px",
     transition: "background-color 0.3s ease",
   },
+  popupOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  popup: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    textAlign: "center",
+    width: "300px",
+  },
+  okButton: {
+    marginTop: "10px",
+    padding: "10px 20px",
+    backgroundColor: "#3f51b5",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  // Responsive styles
   "@media (max-width: 600px)": {
     tab: {
       padding: "12px",

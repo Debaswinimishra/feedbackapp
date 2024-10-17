@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff"; // Import the visibility off icon
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import avatar from "./../../assets/logo.png";
 import { authenticateUserThunk } from "./Login.Thunk";
