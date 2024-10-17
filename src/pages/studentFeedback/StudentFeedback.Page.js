@@ -32,6 +32,9 @@ const StudentFeedback = () => {
     { id: 3, text: "Is the earth round?" },
   ];
 
+  const currentYear = new Date().getFullYear(); //To track my current year
+  const currentMonth = new Date().getMonth(); //To track my current month
+
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
     setSelectedMonth("");
@@ -40,8 +43,12 @@ const StudentFeedback = () => {
   };
 
   const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value);
-    setSelectedClass("");
+    if (selectedYear == currentYear && e.target.value > currentMonth + 1) {
+      alert("You can't select a month beyond the current month !");
+    } else {
+      setSelectedMonth(e.target.value);
+      setSelectedClass("");
+    }
     setGkQuestions([]);
   };
 
