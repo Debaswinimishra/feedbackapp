@@ -45,10 +45,6 @@ function LoginPage() {
     // console.log("New UUID generated and set:", newUuid);
   }
 
-  useEffect(() => {
-    console.log("useEffect: ", message);
-  }, [message]);
-
   const login_button_click = async () => {
     if (!email) {
       showToast("Please enter a valid email id");
