@@ -80,7 +80,7 @@ import { authenticateUserThunk } from "./Login.Thunk";
 import { v4 as uuidv4 } from "uuid";
 
 const uuid = uuidv4();
-console.log("check--->", uuid);
+// console.log("check--->", uuid);
 
 const initialState = {
   data: [],
