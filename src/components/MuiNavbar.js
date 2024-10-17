@@ -35,7 +35,6 @@ function MuiNavbar() {
   };
 
   const handleLogout = () => {
-    // Show confirmation dialog
     Swal.fire({
       title: "Are you sure?",
       text: "Do you want to log out?",
@@ -46,12 +45,7 @@ function MuiNavbar() {
       confirmButtonText: "Yes, log me out!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(logout()); // Call logout if confirmed
-        Swal.fire(
-          "Logged out!",
-          "You have been logged out successfully.",
-          "success"
-        );
+        dispatch(logout());
       }
     });
   };
@@ -75,49 +69,14 @@ function MuiNavbar() {
             aria-expanded={open ? "true" : undefined}
             onClick={handleMenuClick}
           >
-            <Avatar sx={{ m: 1, bgcolor: "#3f51b5", width: 37, height: 37 }}>
+            <Avatar
+              sx={{ m: 1, bgcolor: "#3f51b5", width: 37, height: 37 }}
+              onClick={handleLogout}
+            >
               <AccountCircleIcon />
             </Avatar>
           </Button>
         </Stack>
-        <Menu
-          id="userprofile-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          MenuListProps={{
-            "aria-labelledby": "userprofile-button",
-          }}
-        >
-          <MenuItem onClick={handleClose}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              spacing={2}
-              sx={{ display: "flex", alignItems: "center" }}
-              onClick={handleLogout} // Move logout logic here
-            >
-              <IconButton
-                size="small"
-                edge="start"
-                color="inherit"
-                aria-label="logo"
-              >
-                <ExitToAppIcon />
-              </IconButton>
-              <Typography component="div">Logout</Typography>
-            </Stack>
-          </MenuItem>
-        </Menu>
       </Toolbar>
     </AppBar>
   );
