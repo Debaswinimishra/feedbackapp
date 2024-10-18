@@ -48,6 +48,17 @@ const StudentFeedback = () => {
     setSelectedYear(currentYear);
     setSelectedMonth(currentMonth);
   }, [currentYear, currentMonth]);
+  // useEffect(() => {
+  //   // This will reload the page only once when the component mounts
+  //   if (!sessionStorage.getItem("reloaded")) {
+  //     window.location.reload();
+  //     sessionStorage.setItem("reloaded", "true");
+  //   }
+
+  //   // Set the current year and month on component mount
+  //   setSelectedYear(currentYear);
+  //   setSelectedMonth(currentMonth);
+  // }, [currentYear, currentMonth]);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);

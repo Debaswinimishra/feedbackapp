@@ -18,6 +18,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Swal from "sweetalert2";
 
 import avatar from "./../../assets/logo.png";
 import { authenticateUserThunk } from "./Login.Thunk";
@@ -45,11 +46,21 @@ function LoginPage() {
     // console.log("New UUID generated and set:", newUuid);
   }
 
+  const showAlert = (message, type = "error") => {
+    Swal.fire({
+      icon: type, // 'error', 'success', 'warning', 'info', 'question'
+      title: message,
+      confirmButtonText: "OK",
+      timer: 3000, // Auto close after 3 seconds
+      timerProgressBar: true,
+    });
+  };
+
   const login_button_click = async () => {
     if (!email) {
-      showToast("Please enter a valid email id");
+      showAlert("Please enter a valid email id");
     } else if (!password) {
-      showToast("Please enter a valid password");
+      showAlert("Please enter a valid password");
     } else {
       const user = {
         userid: email,
@@ -57,29 +68,24 @@ function LoginPage() {
       };
 
       try {
-        // Dispatch the login action and wait for the response
-        const response = await dispatch(authenticateUserThunk(user)); // Assuming unwrap to extract payload from thunk
-        console.log("response========>", response);
+        const response = await dispatch(authenticateUserThunk(user));
+        console.log("Full response object: ", response); // Log the entire response
 
-        if (response.status === 200) {
+        if (response.payload.length > 0) {
           console.log("if");
-          // Successful login
-          showToast("Login successful");
+          showAlert("Login successful", "success");
           // Perform further actions, like redirecting the user
+        } else if (response.payload.length == 0) {
+          console.log("else IF");
+          showAlert(response.message || "Invalid userid/ password", "error");
         } else {
           console.log("else");
-          // Handle other possible status codes
-          showToast(response.message || "Invalid userid/ password");
         }
       } catch (error) {
         console.error("Authentication error:", error);
-        showToast("An error occurred. Please try again.");
+        showAlert("An error occurred. Please try again.", "error");
       }
     }
-  };
-  // test check
-  const showToast = (message) => {
-    toast.error(message);
   };
 
   return (
