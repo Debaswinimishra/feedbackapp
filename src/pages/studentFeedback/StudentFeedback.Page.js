@@ -88,9 +88,13 @@ const StudentFeedback = () => {
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleClusterChange = (e) => {
     setSelectedCluster(e.target.value);
+    setGkQuestions([]);
+    setAnswers({});
   };
   const handleSchoolChange = (e) => {
     setSelectedSchool(e.target.value);
+    setGkQuestions([]);
+    setAnswers({});
   };
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
@@ -142,6 +146,8 @@ const StudentFeedback = () => {
           setStudentOptions(updatedStudents); // Update student options
         }
         // Reset states after submission
+        setSelectedCluster("");
+        setSelectedSchool("");
         setSelectedClass("");
         setGkQuestions([]);
         setAnswers({});
@@ -269,7 +275,7 @@ const StudentFeedback = () => {
             selectedSchool &&
             classOptions.map((classOption) => (
               <option key={classOption} value={classOption}>
-                {classOption}
+                Class {classOption}
               </option>
             ))}
         </select>
