@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import {
+  getStudentListForFeedback,
+  getAllFeedbackQuestions,
+  saveFeedback,
+} from "./StudentFeedback.Api";
 
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
@@ -8,6 +13,7 @@ const StudentFeedback = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [questions, setQuestions] = useState([]);
   const [gkQuestions, setGkQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [selectedStudent, setSelectedStudent] = useState("");
@@ -98,13 +104,33 @@ const StudentFeedback = () => {
   };
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
-    setGkQuestions(dummyQuestions);
+
     setAnswers({});
-    setSelectedStudent(""); // Reset student selection
+    setSelectedStudent("");
+    // const data = {
+    //   year: selectedYear,
+    //   month: selectedMonth,
+    //   clas: e.target.value,
+    //   biweek: activeTab,
+    //   consultantId: userId,
+    // };
+    // getStudentListForFeedback(data);
   };
 
   const handleStudentChange = (e) => {
     setSelectedStudent(e.target.value);
+    setGkQuestions(dummyQuestions);
+    // getAllFeedbackQuestions()
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       setQuestions(res.data);
+    //     } else {
+    //       alert("No data is found for the selected fields!");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("The error is -------->", error);
+    //   });
   };
 
   const handleAnswerChange = (questionId, answer) => {

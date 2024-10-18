@@ -1,6 +1,6 @@
 import axios from "axios";
-// const baseURL = "https://thinkzone.in.net/thinkzone";
-const baseURL = "https://thinkzone.co/thinkzone";
+const baseURL = "https://thinkzone.in.net/thinkzone";
+// const baseURL = "https://thinkzone.co/thinkzone";
 // const baseURL = "http://3.142.110.38/thinkzone";
 //Application Version to change here
 export const Version = {
