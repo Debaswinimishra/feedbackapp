@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 
 const StudentFeedback = () => {
   const [selectedClass, setSelectedClass] = useState("");
+  const [selectedCluster, setSelectedCluster] = useState("");
+  const [selectedSchool, setSelectedSchool] = useState("");
   const [activeTab, setActiveTab] = useState(1);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -18,6 +20,8 @@ const StudentFeedback = () => {
   const userId = localStorage.getItem("userid");
 
   const classOptions = [1, 2, 3, 4, 5];
+  const clusterOptions = [1, 2, 3, 4, 5];
+  const schoolOptions = [1, 2, 3, 4, 5];
   const yearOptions = [2024, 2023];
   const monthOptions = [
     { value: 1, label: "January" },
@@ -82,7 +86,12 @@ const StudentFeedback = () => {
   };
 
   const handleTabChange = (tab) => setActiveTab(tab);
-
+  const handleClusterChange = (e) => {
+    setSelectedCluster(e.target.value);
+  };
+  const handleSchoolChange = (e) => {
+    setSelectedSchool(e.target.value);
+  };
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
     setGkQuestions(dummyQuestions);
@@ -205,6 +214,46 @@ const StudentFeedback = () => {
       </div>
 
       <div style={styles.dropdownContainer}>
+        <label style={styles.label}>Select Cluster:</label>
+        <select
+          style={styles.dropdown}
+          value={selectedCluster}
+          onChange={handleClusterChange}
+        >
+          <option value="" disabled>
+            --Select Cluster--
+          </option>
+          {selectedYear &&
+            selectedMonth &&
+            clusterOptions.map((clusterOption) => (
+              <option key={clusterOption} value={clusterOption}>
+                Cluster {clusterOption}
+              </option>
+            ))}
+        </select>
+      </div>
+      <div style={styles.dropdownContainer}>
+        <label style={styles.label}>Select School:</label>
+        <select
+          style={styles.dropdown}
+          value={selectedSchool}
+          onChange={handleSchoolChange}
+        >
+          <option value="" disabled>
+            --Select School--
+          </option>
+          {selectedYear &&
+            selectedMonth &&
+            selectedCluster &&
+            schoolOptions.map((schoolOption) => (
+              <option key={schoolOption} value={schoolOption}>
+                School {schoolOption}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      <div style={styles.dropdownContainer}>
         <label style={styles.label}>Select Class:</label>
         <select
           style={styles.dropdown}
@@ -216,9 +265,11 @@ const StudentFeedback = () => {
           </option>
           {selectedYear &&
             selectedMonth &&
+            selectedCluster &&
+            selectedSchool &&
             classOptions.map((classOption) => (
               <option key={classOption} value={classOption}>
-                Class {classOption}
+                {classOption}
               </option>
             ))}
         </select>
