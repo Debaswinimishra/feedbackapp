@@ -1,10 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../api/api";
+import { authenticationAPI } from "../../api/api";
 
 export const authenticateUserThunk = createAsyncThunk(
   "login/authenticate",
   async (user) => {
-    let response = await api.get(`/authUserCred/${user.userid}/${user.pswd}`);
+    let response = await authenticationAPI.get(
+      `/authUserCred/${user.userid}/${user.pswd}`
+    );
     return response.data;
   }
 );

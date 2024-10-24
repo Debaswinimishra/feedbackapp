@@ -4,6 +4,8 @@ import {
   getStudentListForFeedback,
   getAllFeedbackQuestions,
   saveFeedback,
+  getAllSchoolsClusterwise,
+  getAllocatedClusters,
 } from "./StudentFeedback.Api";
 
 const StudentFeedback = () => {
@@ -14,20 +16,16 @@ const StudentFeedback = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [questions, setQuestions] = useState([]);
+  const [clusterOptions, setClusterOptions] = useState([]);
+  const [schoolOptions, setSchoolsOptions] = useState([]);
   const [gkQuestions, setGkQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [selectedStudent, setSelectedStudent] = useState("");
-  const [studentOptions, setStudentOptions] = useState([
-    { id: 0, name: "Student A" },
-    { id: 1, name: "Student B" },
-    { id: 2, name: "Student C" },
-  ]);
+  const [studentOptions, setStudentOptions] = useState([]);
 
-  const userId = localStorage.getItem("userid");
+  const userId = localStorage.getItem("userid"); //This is only my consultantId
 
   const classOptions = [1, 2, 3, 4, 5];
-  const clusterOptions = [1, 2, 3, 4, 5];
-  const schoolOptions = [1, 2, 3, 4, 5];
   const yearOptions = [2024, 2023];
   const monthOptions = [
     { value: 1, label: "January" },
@@ -54,21 +52,27 @@ const StudentFeedback = () => {
   const currentMonth = new Date().getMonth() + 1; // Month is 0-indexed
 
   useEffect(() => {
-    // Set the current year and month on component mount
-    setSelectedYear(currentYear);
-    setSelectedMonth(currentMonth);
-  }, [currentYear, currentMonth]);
-  // useEffect(() => {
-  //   // This will reload the page only once when the component mounts
-  //   if (!sessionStorage.getItem("reloaded")) {
-  //     window.location.reload();
-  //     sessionStorage.setItem("reloaded", "true");
-  //   }
-
-  //   // Set the current year and month on component mount
-  //   setSelectedYear(currentYear);
-  //   setSelectedMonth(currentMonth);
-  // }, [currentYear, currentMonth]);
+    if (selectedMonth && selectedYear && userId) {
+      const data = {
+        year: parseInt(selectedYear),
+        month: parseInt(selectedMonth),
+        consultantId: userId,
+      };
+      console.log("data sent----------->", data);
+      getAllocatedClusters(data)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("res.data------------>", res.data);
+            setClusterOptions(res.data);
+          } else {
+            console.log("The status got ---------->", res.status);
+          }
+        })
+        .catch((error) => {
+          console.error("The error encountered----------->", error);
+        });
+    }
+  }, [selectedMonth, selectedYear]);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -76,7 +80,7 @@ const StudentFeedback = () => {
     setSelectedClass("");
     setGkQuestions([]);
     setAnswers({});
-    setSelectedStudent(""); // Reset student selection
+    setSelectedStudent("");
   };
 
   const handleMonthChange = (e) => {
@@ -85,17 +89,32 @@ const StudentFeedback = () => {
     } else {
       setSelectedMonth(e.target.value);
       setSelectedClass("");
-      setSelectedStudent(""); // Reset student selection
+      setSelectedStudent("");
     }
     setGkQuestions([]);
     setAnswers({});
   };
 
   const handleTabChange = (tab) => setActiveTab(tab);
+
   const handleClusterChange = (e) => {
     setSelectedCluster(e.target.value);
     setGkQuestions([]);
     setAnswers({});
+    getAllSchoolsClusterwise(e.target.value)
+      .then((res) => {
+        if (res.status === 200) {
+          setSchoolsOptions(res.data);
+        } else {
+          console.log("The status got ---------->", res.status);
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "The error encountered while fetching schools------->",
+          error
+        );
+      });
   };
   const handleSchoolChange = (e) => {
     setSelectedSchool(e.target.value);
@@ -107,14 +126,27 @@ const StudentFeedback = () => {
 
     setAnswers({});
     setSelectedStudent("");
-    // const data = {
-    //   year: selectedYear,
-    //   month: selectedMonth,
-    //   clas: e.target.value,
-    //   biweek: activeTab,
-    //   consultantId: userId,
-    // };
-    // getStudentListForFeedback(data);
+    const data = {
+      year: selectedYear,
+      month: selectedMonth,
+      clas: e.target.value,
+      biweek: activeTab,
+      consultantId: userId,
+    };
+    getStudentListForFeedback(data)
+      .then((res) => {
+        if (res.status === 200) {
+          setStudentOptions(res.data);
+        } else {
+          setStudentOptions([]);
+        }
+      })
+      .catch((error) =>
+        console.error(
+          "The error encountered while getting the students------>",
+          error
+        )
+      );
   };
 
   const handleStudentChange = (e) => {
@@ -167,7 +199,6 @@ const StudentFeedback = () => {
           const updatedStudents = studentOptions.filter(
             (student) => student.id !== parseInt(selectedStudent)
           );
-          console.log("updatedStudents", updatedStudents);
 
           setStudentOptions(updatedStudents); // Update student options
         }
@@ -257,9 +288,9 @@ const StudentFeedback = () => {
           </option>
           {selectedYear &&
             selectedMonth &&
-            clusterOptions.map((clusterOption) => (
-              <option key={clusterOption} value={clusterOption}>
-                Cluster {clusterOption}
+            clusterOptions.map((clusterOption, index) => (
+              <option key={index} value={clusterOption?.cluster}>
+                {clusterOption?.cluster}
               </option>
             ))}
         </select>

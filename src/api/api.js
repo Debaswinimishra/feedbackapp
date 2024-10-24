@@ -1,8 +1,15 @@
 import axios from "axios";
-// const baseURL = "https://thinkzone.in.net/thinkzone";
-const baseURL = "https://thinkzone.co/thinkzone";
-// const baseURL = "http://3.142.110.38/thinkzone";
-//Application Version to change here
+
+//* -------------------------For the internal data-----------------------------
+export const baseURL = "https://tatvagyan.in/prakashak/";
+// const baseURL = "https://tatvagyan.co.in/prakashak/";
+// const baseURL = "http://20.51.237.197/prakashak/";
+
+//*-------------For the authentication-----------------------------------------
+// export const baseURL2 = "https://thinkzone.in.net/thinkzone";
+const baseURL2 = "https://thinkzone.co/thinkzone";
+// const baseURL2 = "http://3.142.110.38/thinkzone";
+
 export const Version = {
   version: "1.5.6",
 };
@@ -12,7 +19,10 @@ export const networkStatus =
     ? "Test 🔴"
     : "Production 🟢";
 
-//Axios create baseUrls for changing different servers
-export default axios.create({
+export const dataAPI = axios.create({
   baseURL,
+});
+
+export const authenticationAPI = axios.create({
+  baseURL: baseURL2,
 });
