@@ -2,9 +2,7 @@ import { dataAPI } from "../../api/api";
 
 //*To fetch my students under my consultantId
 export const getStudentListForFeedback = async (data) => {
-  return await dataAPI.get(
-    `/getAllocatedStudents/${data.year}/${data.month}/${data.biweek}/${data.consultantId}/${data.clas}`
-  );
+  return await dataAPI.post("/getAllocatedStudents", data);
 };
 
 //* To fetch all the questions.

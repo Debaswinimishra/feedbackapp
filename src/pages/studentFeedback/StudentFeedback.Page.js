@@ -99,6 +99,9 @@ const StudentFeedback = () => {
 
   const handleClusterChange = (e) => {
     setSelectedCluster(e.target.value);
+    setSelectedSchool("");
+    setSelectedClass("");
+    setSelectedStudent("");
     setGkQuestions([]);
     setAnswers({});
     getAllSchoolsClusterwise(e.target.value)
@@ -118,20 +121,24 @@ const StudentFeedback = () => {
   };
   const handleSchoolChange = (e) => {
     setSelectedSchool(e.target.value);
+    setSelectedClass("");
+    setSelectedStudent("");
     setGkQuestions([]);
     setAnswers({});
   };
   const handleClassChange = (e) => {
     setSelectedClass(e.target.value);
-
+    setSelectedStudent("");
     setAnswers({});
     setSelectedStudent("");
     const data = {
-      year: selectedYear,
-      month: selectedMonth,
-      clas: e.target.value,
-      biweek: activeTab,
+      year: parseInt(selectedYear),
+      month: parseInt(selectedMonth),
+      class: parseInt(e.target.value),
+      biweek: parseInt(activeTab),
       consultantId: userId,
+      cluster: selectedCluster,
+      school_name: selectedSchool,
     };
     getStudentListForFeedback(data)
       .then((res) => {
@@ -151,18 +158,17 @@ const StudentFeedback = () => {
 
   const handleStudentChange = (e) => {
     setSelectedStudent(e.target.value);
-    setGkQuestions(dummyQuestions);
-    // getAllFeedbackQuestions()
-    //   .then((res) => {
-    //     if (res.status === 200) {
-    //       setQuestions(res.data);
-    //     } else {
-    //       alert("No data is found for the selected fields!");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("The error is -------->", error);
-    //   });
+    getAllFeedbackQuestions()
+      .then((res) => {
+        if (res.status === 200) {
+          setGkQuestions(res.data);
+        } else {
+          alert("No data is found for the selected fields!");
+        }
+      })
+      .catch((error) => {
+        console.error("The error is -------->", error);
+      });
   };
 
   const handleAnswerChange = (questionId, answer) => {
@@ -212,6 +218,8 @@ const StudentFeedback = () => {
       });
     }
   };
+
+  console.log("schools----------->", schoolOptions);
 
   return (
     <div style={styles.container}>
@@ -308,9 +316,9 @@ const StudentFeedback = () => {
           {selectedYear &&
             selectedMonth &&
             selectedCluster &&
-            schoolOptions.map((schoolOption) => (
-              <option key={schoolOption} value={schoolOption}>
-                School {schoolOption}
+            schoolOptions?.map((schoolOption, index) => (
+              <option key={index} value={schoolOption?.school_name}>
+                {schoolOption?.school_name}
               </option>
             ))}
         </select>
@@ -351,7 +359,7 @@ const StudentFeedback = () => {
               <option value="">--Select Student--</option>
               {studentOptions.map((student) => (
                 <option key={student.id} value={student.id}>
-                  {student.name}
+                  {student.student_name}
                 </option>
               ))}
             </select>
