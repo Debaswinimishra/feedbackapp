@@ -185,6 +185,14 @@ const StudentFeedback = () => {
     }
   };
 
+  const selectedClusterData = clusterOptions?.filter(
+    (item) => item?.cluster === selectedCluster
+  );
+
+  const studentsForFeedback = studentOptions?.filter(
+    (item) => item?.feedbackStatus === "incomplete"
+  );
+
   const handleAnswerChange = (questionOrder, selectedAnswer) => {
     setAnswers((prevAnswers) => {
       // Ensure prevAnswers is an array, defaulting to an empty array if undefined
@@ -262,6 +270,8 @@ const StudentFeedback = () => {
           class: parseInt(selectedClass),
           school_name: selectedSchool,
           cluster: selectedCluster,
+          district: selectedClusterData[0]?.district,
+          block: selectedClusterData[0]?.block,
         };
         console.log("body sent-------->", body);
         saveFeedback(body)
@@ -435,7 +445,7 @@ const StudentFeedback = () => {
               onChange={handleStudentChange}
             >
               <option value="">--Select Student--</option>
-              {studentOptions.map((student, index) => (
+              {studentsForFeedback.map((student, index) => (
                 <option key={index} value={student.student_id}>
                   {student.student_name}
                 </option>
