@@ -12,7 +12,7 @@ export const getAllFeedbackQuestions = async () => {
 
 //* To save the feedback of the student
 export const saveFeedback = async (body) => {
-  return await dataAPI.post("/saveParentsFeedback");
+  return await dataAPI.post("/saveParentsFeedback", body);
 };
 
 //* To get Assigned clusters for our consultant

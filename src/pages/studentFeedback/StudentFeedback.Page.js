@@ -19,11 +19,12 @@ const StudentFeedback = () => {
   const [clusterOptions, setClusterOptions] = useState([]);
   const [schoolOptions, setSchoolsOptions] = useState([]);
   const [gkQuestions, setGkQuestions] = useState([]);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState("");
   const [studentOptions, setStudentOptions] = useState([]);
 
   const userId = localStorage.getItem("userid"); //This is only my consultantId
+  const username = localStorage.getItem("username");
 
   const classOptions = [1, 2, 3, 4, 5];
   const yearOptions = [2024, 2023];
@@ -49,7 +50,7 @@ const StudentFeedback = () => {
   ];
 
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // Month is 0-indexed
+  const currentMonth = new Date().getMonth() + 1;
 
   useEffect(() => {
     if (selectedMonth && selectedYear && userId) {
@@ -95,7 +96,14 @@ const StudentFeedback = () => {
     setAnswers({});
   };
 
-  const handleTabChange = (tab) => setActiveTab(tab);
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setSelectedCluster("");
+    setSelectedSchool("");
+    setSelectedClass("");
+    setSelectedStudent("");
+    setGkQuestions([]);
+  };
 
   const handleClusterChange = (e) => {
     setSelectedCluster(e.target.value);
@@ -131,6 +139,7 @@ const StudentFeedback = () => {
     setSelectedStudent("");
     setAnswers({});
     setSelectedStudent("");
+    setGkQuestions([]);
     const data = {
       year: parseInt(selectedYear),
       month: parseInt(selectedMonth),
@@ -157,32 +166,73 @@ const StudentFeedback = () => {
   };
 
   const handleStudentChange = (e) => {
-    setSelectedStudent(e.target.value);
-    getAllFeedbackQuestions()
-      .then((res) => {
-        if (res.status === 200) {
-          setGkQuestions(res.data);
-        } else {
-          alert("No data is found for the selected fields!");
-        }
-      })
-      .catch((error) => {
-        console.error("The error is -------->", error);
-      });
+    if (e.target.value) {
+      setSelectedStudent(e.target.value);
+      setGkQuestions([]);
+      getAllFeedbackQuestions()
+        .then((res) => {
+          if (res.status === 200) {
+            setGkQuestions(res.data);
+          } else {
+            alert("No data is found for the selected fields!");
+          }
+        })
+        .catch((error) => {
+          console.error("The error is -------->", error);
+        });
+    } else {
+      setSelectedStudent("");
+    }
   };
 
-  const handleAnswerChange = (questionId, answer) => {
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: answer,
-    }));
+  const handleAnswerChange = (questionOrder, selectedAnswer) => {
+    setAnswers((prevAnswers) => {
+      // Ensure prevAnswers is an array, defaulting to an empty array if undefined
+      const answersArray = Array.isArray(prevAnswers) ? prevAnswers : [];
+
+      const existingIndex = answersArray.findIndex(
+        (item) => item.questionOrder === questionOrder
+      );
+
+      // Find the question from gkQuestions based on questionOrder
+      const currentQuestion = gkQuestions.find(
+        (q) => q.questionOrder === questionOrder
+      );
+
+      // Determine the answer based on the selectedAnswer
+      const newAnswer = selectedAnswer === "yes" ? "yes" : "no";
+
+      // Create a copy of answersArray to update
+      const updatedAnswers = [...answersArray];
+
+      if (existingIndex !== -1) {
+        // Update the existing answer
+        updatedAnswers[existingIndex] = {
+          ...updatedAnswers[existingIndex],
+          answer: newAnswer,
+        };
+      } else if (currentQuestion) {
+        // Add new answer with questionOrder and question from gkQuestions
+        updatedAnswers.push({
+          questionOrder: currentQuestion.questionOrder,
+          question: currentQuestion.question,
+          answer: newAnswer,
+        });
+      }
+
+      return updatedAnswers;
+    });
   };
+
+  //This will be having my student data that I need for the save function
+  const studentName = studentOptions?.filter(
+    (item) => item.student_id === selectedStudent
+  );
+
+  console.log("studentName--------->", studentName);
 
   const handleSubmit = () => {
-    const allAnswered = gkQuestions.every(
-      (question) => answers[question.id] !== undefined
-    );
-
+    const allAnswered = answers.length === gkQuestions?.length;
     if (!allAnswered) {
       Swal.fire({
         title: "Incomplete Submission",
@@ -199,27 +249,55 @@ const StudentFeedback = () => {
         confirmButtonColor: "#3f51b5",
         confirmButtonText: "OK",
       }).then(() => {
-        // Check if a student is selected
-        if (selectedStudent) {
-          // Remove the selected student from the student options
-          const updatedStudents = studentOptions.filter(
-            (student) => student.id !== parseInt(selectedStudent)
-          );
+        const body = {
+          year: parseInt(selectedYear),
+          month: parseInt(selectedMonth),
+          consultantId: userId,
+          consultantName: username,
+          student_id: studentName[0]?.student_id,
+          student_name: studentName[0]?.student_name,
+          feedbackData: answers,
+          feedbackStatus: "complete",
+          biweek: parseInt(activeTab),
+          class: parseInt(selectedClass),
+          school_name: selectedSchool,
+          cluster: selectedCluster,
+        };
+        console.log("body sent-------->", body);
+        saveFeedback(body)
+          .then((res) => {
+            if (res.status === 200) {
+              console.log("res.status--------->", res.status);
+              alert("Succesfully saved feedback response.");
+              if (selectedStudent) {
+                const updatedStudents = studentOptions.filter(
+                  (student) => student.id !== parseInt(selectedStudent)
+                );
 
-          setStudentOptions(updatedStudents); // Update student options
-        }
-        // Reset states after submission
-        setSelectedCluster("");
-        setSelectedSchool("");
-        setSelectedClass("");
-        setGkQuestions([]);
-        setAnswers({});
-        setSelectedStudent(""); // Reset student selection
+                setStudentOptions(updatedStudents);
+              }
+              setSelectedCluster("");
+              setSelectedSchool("");
+              setSelectedClass("");
+              setGkQuestions([]);
+              setAnswers({});
+              setSelectedStudent("");
+            } else {
+              console.log("res.status--------->", res.status);
+              alert("Response couldn't be saved.Please try again later!");
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "The error encountered while saving feedback response--------->",
+              error
+            );
+          });
       });
     }
   };
 
-  console.log("schools----------->", schoolOptions);
+  console.log("answers----------->", answers);
 
   return (
     <div style={styles.container}>
@@ -357,8 +435,8 @@ const StudentFeedback = () => {
               onChange={handleStudentChange}
             >
               <option value="">--Select Student--</option>
-              {studentOptions.map((student) => (
-                <option key={student.id} value={student.id}>
+              {studentOptions.map((student, index) => (
+                <option key={index} value={student.student_id}>
                   {student.student_name}
                 </option>
               ))}
@@ -378,17 +456,19 @@ const StudentFeedback = () => {
         gkQuestions.length > 0 && (
           <div style={styles.questionsContainer}>
             {gkQuestions.map((question, index) => (
-              <div key={question.id} style={styles.question}>
+              <div key={index} style={styles.question}>
                 <p style={styles.questionText}>
-                  {index + 1}. {question.text}
+                  {index + 1}. {question?.question}
                 </p>
                 <div style={styles.radioGroup}>
                   <label style={styles.radioLabel}>
                     <input
                       type="radio"
-                      name={`question-${question.id}`}
+                      name={`question-${question.questionOrder}`}
                       value="yes"
-                      onChange={() => handleAnswerChange(question.id, "yes")}
+                      onChange={() =>
+                        handleAnswerChange(question.questionOrder, "yes")
+                      }
                       style={styles.radioInput}
                     />{" "}
                     Yes
@@ -396,9 +476,11 @@ const StudentFeedback = () => {
                   <label style={styles.radioLabel}>
                     <input
                       type="radio"
-                      name={`question-${question.id}`}
+                      name={`question-${question.questionOrder}`}
                       value="no"
-                      onChange={() => handleAnswerChange(question.id, "no")}
+                      onChange={() =>
+                        handleAnswerChange(question.questionOrder, "no")
+                      }
                       style={styles.radioInput}
                     />{" "}
                     No
@@ -486,6 +568,8 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "8px",
     backgroundColor: "#f9f9f9",
+    boxShadow:
+      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
   },
   questionText: {
     fontSize: "16px",
