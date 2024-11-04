@@ -9,12 +9,15 @@ import {
 } from "./StudentFeedback.Api";
 
 const StudentFeedback = () => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedCluster, setSelectedCluster] = useState("");
   const [selectedSchool, setSelectedSchool] = useState("");
   const [activeTab, setActiveTab] = useState(1);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [questions, setQuestions] = useState([]);
   const [clusterOptions, setClusterOptions] = useState([]);
   const [schoolOptions, setSchoolsOptions] = useState([]);
@@ -48,9 +51,6 @@ const StudentFeedback = () => {
     { id: 2, text: "Do fish swim?" },
     { id: 3, text: "Is the earth round?" },
   ];
-
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
 
   useEffect(() => {
     if (selectedMonth && selectedYear && userId) {
