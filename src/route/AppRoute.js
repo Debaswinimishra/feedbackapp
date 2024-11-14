@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoginPage from "../pages/login/Login.Page";
 import StudentFeedback from "../pages/studentFeedback/StudentFeedback.Page";
-import FeedbackReport from "../pages/feedbackReport/FeedbackReport.Api";
+import FeedbackReport from "../pages/feedbackReport/FeedbackReport.Page";
 
 import { Version } from "../api/api";
 
