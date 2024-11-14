@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoginPage from "../pages/login/Login.Page";
 import StudentFeedback from "../pages/studentFeedback/StudentFeedback.Page";
+import FeedbackReport from "../pages/feedbackReport/FeedbackReport.Api";
 
 import { Version } from "../api/api";
 
@@ -25,6 +26,7 @@ function AppRoute({ loggedin }) {
         <>
           <Route exact path="/" element={<StudentFeedback />} />
           <Route path="/home" element={<StudentFeedback />} />
+          <Route path="/feedbackReport" element={<FeedbackReport />} />
         </>
       )}
 
