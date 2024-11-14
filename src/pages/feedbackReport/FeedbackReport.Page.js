@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  getAllocatedDistricts,
+  getAllocatedBlocks,
+} from "./FeedbackReport.Api";
 
 const FeedbackReport = () => {
   const currentYear = new Date().getFullYear();
@@ -23,7 +27,10 @@ const FeedbackReport = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [selectedBlock, setSelectedBlock] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("PURI");
+  console.log("selectedDistrict====>", selectedDistrict);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [blockOptions, setBlockOptions] = useState([]);
   const [data, setData] = useState([
     {
       slNo: 1,
@@ -41,13 +48,29 @@ const FeedbackReport = () => {
     },
   ]);
 
-  // Manually added district and block data
-  const districtOptions = ["District 1", "District 2", "District 3"];
-  const blockOptions = {
-    "District 1": ["Block A", "Block B"],
-    "District 2": ["Block C", "Block D"],
-    "District 3": ["Block E", "Block F"],
-  };
+  // const blockOptions = {
+  //   "District 1": ["Block A", "Block B"],
+  //   "District 2": ["Block C", "Block D"],
+  //   "District 3": ["Block E", "Block F"],
+  // };
+
+  useEffect(() => {
+    if (selectedMonth && selectedYear) {
+      getAllocatedDistricts()
+        .then((res) => {
+          if (res.status === 200) {
+            const districts =
+              res?.data.length > 0 && res?.data?.map((item) => item?.district);
+            setDistrictOptions(districts);
+          } else {
+            console.log("status---------->", res.status);
+          }
+        })
+        .catch((error) => {
+          console.error("error----------->", error);
+        });
+    }
+  }, [selectedMonth, selectedYear]);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -60,6 +83,18 @@ const FeedbackReport = () => {
     } else {
       setSelectedMonth(e.target.value);
     }
+
+    // getAllocatedBlocks(e.target.value)
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       setBlockOptions(res.data);
+    //     } else {
+    //       console.log("status ---------->", res.status);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("error------->", error);
+    //   });
   };
 
   const handleTabChange = (tab) => {
@@ -68,7 +103,7 @@ const FeedbackReport = () => {
 
   const handleDistrictChange = (e) => {
     setSelectedDistrict(e.target.value);
-    setSelectedBlock(""); // Reset block selection when district changes
+    setSelectedBlock("");
   };
 
   const handleBlockChange = (e) => {

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 //* -------------------------For the internal data-----------------------------
-export const baseURL = "https://tatvagyan.in/prakashak/";
-// const baseURL = "https://tatvagyan.co.in/prakashak/";
+// export const baseURL = "https://tatvagyan.in/prakashak/";
+const baseURL = "https://tatvagyan.co.in/prakashak/";
 // const baseURL = "http://20.51.237.197/prakashak/";
 
 //*-------------For the authentication-----------------------------------------
