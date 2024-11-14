@@ -57,7 +57,7 @@ function MuiNavbar() {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Stack direction="row" spacing={2}>
             <div className="mis-title1" style={{ color: "black" }}>
-              <b>Feedback App</b>
+              <b>Parents response</b>
             </div>
           </Stack>
         </Typography>
