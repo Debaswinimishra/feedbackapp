@@ -27,7 +27,7 @@ const FeedbackReport = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [selectedBlock, setSelectedBlock] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("PURI");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
   console.log("selectedDistrict====>", selectedDistrict);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [blockOptions, setBlockOptions] = useState([]);
@@ -94,21 +94,22 @@ const FeedbackReport = () => {
   const handleDistrictChange = (e) => {
     setSelectedDistrict(e.target.value);
     setSelectedBlock("");
-
-    getAllocatedBlocks(e.target.value)
-      .then((res) => {
-        if (res.status === 200) {
-          const blocks =
-            res?.data.length > 0 && res?.data?.map((item) => item?.block);
-          setBlockOptions(blocks);
-          console.log("data==========>", res.data[0]);
-        } else {
-          console.log("status ---------->", res.status);
-        }
-      })
-      .catch((error) => {
-        console.error("error------->", error);
-      });
+    if (e.target.value) {
+      getAllocatedBlocks(e.target.value)
+        .then((res) => {
+          if (res.status === 200) {
+            const blocks =
+              res?.data.length > 0 && res?.data?.map((item) => item?.block);
+            setBlockOptions(blocks);
+            console.log("data==========>", res.data[0]);
+          } else {
+            console.log("status ---------->", res.status);
+          }
+        })
+        .catch((error) => {
+          console.error("error------->", error);
+        });
+    }
   };
 
   const handleBlockChange = (e) => {
@@ -222,9 +223,9 @@ const FeedbackReport = () => {
         </div>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "20px", margin: "2%" }}>
         {selectedYear && selectedMonth && selectedDistrict && selectedBlock && (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table style={{ width: "97%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th
