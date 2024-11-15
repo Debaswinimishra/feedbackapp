@@ -31,6 +31,8 @@ const FeedbackReport = () => {
   console.log("selectedDistrict====>", selectedDistrict);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [blockOptions, setBlockOptions] = useState([]);
+  console.log("blockOptions=======>", blockOptions);
+
   const [data, setData] = useState([
     {
       slNo: 1,
@@ -83,18 +85,6 @@ const FeedbackReport = () => {
     } else {
       setSelectedMonth(e.target.value);
     }
-
-    // getAllocatedBlocks(e.target.value)
-    //   .then((res) => {
-    //     if (res.status === 200) {
-    //       setBlockOptions(res.data);
-    //     } else {
-    //       console.log("status ---------->", res.status);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("error------->", error);
-    //   });
   };
 
   const handleTabChange = (tab) => {
@@ -104,10 +94,26 @@ const FeedbackReport = () => {
   const handleDistrictChange = (e) => {
     setSelectedDistrict(e.target.value);
     setSelectedBlock("");
+
+    getAllocatedBlocks(e.target.value)
+      .then((res) => {
+        if (res.status === 200) {
+          const blocks =
+            res?.data.length > 0 && res?.data?.map((item) => item?.block);
+          setBlockOptions(blocks);
+          console.log("data==========>", res.data[0]);
+        } else {
+          console.log("status ---------->", res.status);
+        }
+      })
+      .catch((error) => {
+        console.error("error------->", error);
+      });
   };
 
   const handleBlockChange = (e) => {
     setSelectedBlock(e.target.value);
+    setData([]);
   };
 
   return (
@@ -178,12 +184,17 @@ const FeedbackReport = () => {
             <option value="" disabled>
               --Select Block--
             </option>
-            {selectedDistrict &&
+            {/* {selectedDistrict &&
               blockOptions[selectedDistrict]?.map((block, index) => (
                 <option key={index} value={block}>
                   {block}
                 </option>
-              ))}
+              ))} */}
+            {blockOptions.map((block, index) => (
+              <option key={index} value={block}>
+                {block}
+              </option>
+            ))}
           </select>
         </div>
 
