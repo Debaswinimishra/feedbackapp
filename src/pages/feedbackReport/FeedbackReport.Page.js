@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   getAllocatedDistricts,
   getAllocatedBlocks,
+  getConsultantFeedbackReport,
 } from "./FeedbackReport.Api";
 
 const FeedbackReport = () => {
@@ -113,8 +114,25 @@ const FeedbackReport = () => {
   };
 
   const handleBlockChange = (e) => {
-    setSelectedBlock(e.target.value);
     setData([]);
+    setSelectedBlock(e.target.value);
+    if (e.target.value) {
+      const body = {
+        year: selectedYear,
+        month: selectedMonth,
+        district: selectedDistrict,
+        block: selectedBlock,
+      };
+      getConsultantFeedbackReport(body)
+        .then((res) => {
+          if (res.status === 200) {
+            setData(res.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error while getting data------>", error);
+        });
+    }
   };
 
   return (
