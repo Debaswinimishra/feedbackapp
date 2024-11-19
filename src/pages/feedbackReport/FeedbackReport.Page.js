@@ -78,6 +78,8 @@ const FeedbackReport = () => {
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
     setSelectedMonth("");
+    setSelectedDistrict("");
+    setSelectedBlock("");
   };
 
   const handleMonthChange = (e) => {
@@ -85,6 +87,8 @@ const FeedbackReport = () => {
       alert("You can't select a month beyond the current month!");
     } else {
       setSelectedMonth(e.target.value);
+      setSelectedDistrict("");
+      setSelectedBlock("");
     }
   };
 
