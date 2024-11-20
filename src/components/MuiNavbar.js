@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2"; // Import SweetAlert
 // components
 import MuiDrawer from "./MuiDrawer";
-
+import AssessmentIcon from "@mui/icons-material/Assessment";
 // MUI
 import {
   Avatar,
@@ -137,7 +137,7 @@ function MuiNavbar() {
                 color="inherit"
                 aria-label="logo"
               >
-                <AccountCircleIcon />
+                <AssessmentIcon />
               </IconButton>
               <Typography component="div" onClick={handleSaveClick}>
                 Report
