@@ -27,3 +27,8 @@ export const getAllocatedClusters = async (data) => {
 export const getAllSchoolsClusterwise = async (cluster) => {
   return await dataAPI.get("getAllSchoolsByCluster/" + cluster);
 };
+
+//*  API to request for feedback edit
+export const requestEditToAdmin = async (body) => {
+  return await dataAPI.post("request_edit_api", body);
+};

@@ -6,6 +6,7 @@ import {
   saveFeedback,
   getAllSchoolsClusterwise,
   getAllocatedClusters,
+  requestEditToAdmin,
 } from "./StudentFeedback.Api";
 
 const StudentFeedback = () => {
@@ -185,6 +186,21 @@ const StudentFeedback = () => {
     }
   };
 
+  const requestEdit = () => {
+    requestEditToAdmin()
+      .then((res) => {
+        if (res.status === 200) {
+          alert("Request has been successfully placed.");
+        } else {
+          alert("Sorry, the request couldn't be placed");
+        }
+      })
+      .catch((error) => {
+        console.error("The error for requesting edit------>", error);
+        alert("Sorry, something went wrong! Please contact admin.");
+      });
+  };
+
   const selectedClusterData = clusterOptions?.filter(
     (item) => item?.cluster === selectedCluster
   );
@@ -310,206 +326,211 @@ const StudentFeedback = () => {
   console.log("answers----------->", answers);
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.userIdText}>User ID: {userId}</h2>
-      <div style={styles.dropdownContainer}>
-        <label style={styles.label}>Select Year:</label>
-        <select
-          style={styles.dropdown}
-          value={selectedYear}
-          onChange={handleYearChange}
-        >
-          <option value="" disabled>
-            --Select Year--
-          </option>
-          {yearOptions.map((yearOption) => (
-            <option key={yearOption} value={yearOption}>
-              {yearOption}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div style={styles.dropdownContainer}>
-        <label style={styles.label}>Select Month:</label>
-        <select
-          style={styles.dropdown}
-          value={selectedMonth}
-          onChange={handleMonthChange}
-        >
-          <option value="" disabled>
-            --Select Month--
-          </option>
-          {selectedYear &&
-            monthOptions.map((monthOption, index) => (
-              <option key={index} value={monthOption.value}>
-                {monthOption.label}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <div style={styles.tabContainer}>
-        <button
-          style={
-            activeTab === 1
-              ? { ...styles.tab, ...styles.activeTab }
-              : styles.tab
-          }
-          onClick={() => handleTabChange(1)}
-        >
-          Day 1-15
-        </button>
-        <button
-          style={
-            activeTab === 2
-              ? { ...styles.tab, ...styles.activeTab }
-              : styles.tab
-          }
-          onClick={() => handleTabChange(2)}
-        >
-          Day 16-30
-        </button>
-      </div>
-
-      <div style={styles.dropdownContainer}>
-        <label style={styles.label}>Select Cluster:</label>
-        <select
-          style={styles.dropdown}
-          value={selectedCluster}
-          onChange={handleClusterChange}
-        >
-          <option value="" disabled>
-            --Select Cluster--
-          </option>
-          {selectedYear &&
-            selectedMonth &&
-            clusterOptions.map((clusterOption, index) => (
-              <option key={index} value={clusterOption?.cluster}>
-                {clusterOption?.cluster}
-              </option>
-            ))}
-        </select>
-      </div>
-      <div style={styles.dropdownContainer}>
-        <label style={styles.label}>Select School:</label>
-        <select
-          style={styles.dropdown}
-          value={selectedSchool}
-          onChange={handleSchoolChange}
-        >
-          <option value="" disabled>
-            --Select School--
-          </option>
-          {selectedYear &&
-            selectedMonth &&
-            selectedCluster &&
-            schoolOptions?.map((schoolOption, index) => (
-              <option key={index} value={schoolOption?.school_name}>
-                {schoolOption?.school_name}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <div style={styles.dropdownContainer}>
-        <label style={styles.label}>Select Class:</label>
-        <select
-          style={styles.dropdown}
-          value={selectedClass}
-          onChange={handleClassChange}
-        >
-          <option value="" disabled>
-            --Select Class--
-          </option>
-          {selectedYear &&
-            selectedMonth &&
-            selectedCluster &&
-            selectedSchool &&
-            classOptions.map((classOption) => (
-              <option key={classOption} value={classOption}>
-                Class {classOption}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      {/* Show Student dropdown only after selecting a class */}
-      {selectedClass && (
+    <div>
+      <div style={styles.container}>
+        <h2 style={styles.userIdText}>User ID: {userId}</h2>
         <div style={styles.dropdownContainer}>
-          <label style={styles.label}>Select Student:</label>
-          {studentOptions.length > 0 ? (
-            <select
-              style={styles.dropdown}
-              value={selectedStudent}
-              onChange={handleStudentChange}
-            >
-              <option value="">--Select Student--</option>
-              {studentsForFeedback.map((student, index) => (
-                <option key={index} value={student.student_id}>
-                  {student.student_name}
+          <label style={styles.label}>Select Year:</label>
+          <select
+            style={styles.dropdown}
+            value={selectedYear}
+            onChange={handleYearChange}
+          >
+            <option value="" disabled>
+              --Select Year--
+            </option>
+            {yearOptions.map((yearOption) => (
+              <option key={yearOption} value={yearOption}>
+                {yearOption}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div style={styles.dropdownContainer}>
+          <label style={styles.label}>Select Month:</label>
+          <select
+            style={styles.dropdown}
+            value={selectedMonth}
+            onChange={handleMonthChange}
+          >
+            <option value="" disabled>
+              --Select Month--
+            </option>
+            {selectedYear &&
+              monthOptions.map((monthOption, index) => (
+                <option key={index} value={monthOption.value}>
+                  {monthOption.label}
                 </option>
               ))}
-            </select>
-          ) : (
-            <select style={styles.dropdown} disabled>
-              <option value="">No students available</option>
-            </select>
-          )}
+          </select>
         </div>
-      )}
 
-      {selectedYear &&
-        selectedMonth &&
-        selectedClass &&
-        selectedStudent &&
-        gkQuestions.length > 0 && (
-          <div style={styles.questionsContainer}>
-            {gkQuestions.map((question, index) => (
-              <div key={index} style={styles.question}>
-                <p style={styles.questionText}>
-                  {index + 1}. {question?.question}
-                </p>
-                <div style={styles.radioGroup}>
-                  <label style={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name={`question-${question.questionOrder}`}
-                      value="yes"
-                      onChange={() =>
-                        handleAnswerChange(question.questionOrder, "yes")
-                      }
-                      style={styles.radioInput}
-                    />{" "}
-                    Yes
-                  </label>
-                  <label style={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name={`question-${question.questionOrder}`}
-                      value="no"
-                      onChange={() =>
-                        handleAnswerChange(question.questionOrder, "no")
-                      }
-                      style={styles.radioInput}
-                    />{" "}
-                    No
-                  </label>
-                </div>
-              </div>
-            ))}
+        <div style={styles.tabContainer}>
+          <button
+            style={
+              activeTab === 1
+                ? { ...styles.tab, ...styles.activeTab }
+                : styles.tab
+            }
+            onClick={() => handleTabChange(1)}
+          >
+            Day 1-15
+          </button>
+          <button
+            style={
+              activeTab === 2
+                ? { ...styles.tab, ...styles.activeTab }
+                : styles.tab
+            }
+            onClick={() => handleTabChange(2)}
+          >
+            Day 16-30
+          </button>
+        </div>
+
+        <div style={styles.dropdownContainer}>
+          <label style={styles.label}>Select Cluster:</label>
+          <select
+            style={styles.dropdown}
+            value={selectedCluster}
+            onChange={handleClusterChange}
+          >
+            <option value="" disabled>
+              --Select Cluster--
+            </option>
+            {selectedYear &&
+              selectedMonth &&
+              clusterOptions.map((clusterOption, index) => (
+                <option key={index} value={clusterOption?.cluster}>
+                  {clusterOption?.cluster}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div style={styles.dropdownContainer}>
+          <label style={styles.label}>Select School:</label>
+          <select
+            style={styles.dropdown}
+            value={selectedSchool}
+            onChange={handleSchoolChange}
+          >
+            <option value="" disabled>
+              --Select School--
+            </option>
+            {selectedYear &&
+              selectedMonth &&
+              selectedCluster &&
+              schoolOptions?.map((schoolOption, index) => (
+                <option key={index} value={schoolOption?.school_name}>
+                  {schoolOption?.school_name}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <div style={styles.dropdownContainer}>
+          <label style={styles.label}>Select Class:</label>
+          <select
+            style={styles.dropdown}
+            value={selectedClass}
+            onChange={handleClassChange}
+          >
+            <option value="" disabled>
+              --Select Class--
+            </option>
+            {selectedYear &&
+              selectedMonth &&
+              selectedCluster &&
+              selectedSchool &&
+              classOptions.map((classOption) => (
+                <option key={classOption} value={classOption}>
+                  Class {classOption}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        {/* Show Student dropdown only after selecting a class */}
+        {selectedClass && (
+          <div style={styles.dropdownContainer}>
+            <label style={styles.label}>Select Student:</label>
+            {studentOptions.length > 0 ? (
+              <select
+                style={styles.dropdown}
+                value={selectedStudent}
+                onChange={handleStudentChange}
+              >
+                <option value="">--Select Student--</option>
+                {studentsForFeedback.map((student, index) => (
+                  <option key={index} value={student.student_id}>
+                    {student.student_name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <select style={styles.dropdown} disabled>
+                <option value="">No students available</option>
+              </select>
+            )}
           </div>
         )}
 
-      {selectedYear &&
-        selectedMonth &&
-        selectedClass &&
-        selectedStudent &&
-        gkQuestions.length > 0 && (
-          <button style={styles.submitButton} onClick={handleSubmit}>
-            Submit Feedback
-          </button>
-        )}
+        {selectedYear &&
+          selectedMonth &&
+          selectedClass &&
+          selectedStudent &&
+          gkQuestions.length > 0 && (
+            <div style={styles.questionsContainer}>
+              {gkQuestions.map((question, index) => (
+                <div key={index} style={styles.question}>
+                  <p style={styles.questionText}>
+                    {index + 1}. {question?.question}
+                  </p>
+                  <div style={styles.radioGroup}>
+                    <label style={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name={`question-${question.questionOrder}`}
+                        value="yes"
+                        onChange={() =>
+                          handleAnswerChange(question.questionOrder, "yes")
+                        }
+                        style={styles.radioInput}
+                      />{" "}
+                      Yes
+                    </label>
+                    <label style={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name={`question-${question.questionOrder}`}
+                        value="no"
+                        onChange={() =>
+                          handleAnswerChange(question.questionOrder, "no")
+                        }
+                        style={styles.radioInput}
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+        {selectedYear &&
+          selectedMonth &&
+          selectedClass &&
+          selectedStudent &&
+          gkQuestions.length > 0 && (
+            <button style={styles.submitButton} onClick={handleSubmit}>
+              Submit Feedback
+            </button>
+          )}
+      </div>
+      <div style={{ marginLeft: "90%", padding: "20px", marginTop: "-25%" }}>
+        <button>Request Edit</button>
+      </div>
     </div>
   );
 };
