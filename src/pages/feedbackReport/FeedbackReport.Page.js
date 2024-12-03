@@ -34,22 +34,7 @@ const FeedbackReport = () => {
   const [blockOptions, setBlockOptions] = useState([]);
   console.log("blockOptions=======>", blockOptions);
 
-  const [data, setData] = useState([
-    {
-      slNo: 1,
-      eceName: "John Doe",
-      allocateCluster: "12345",
-      totalAllocatedStudent: "Block A",
-      totalCalledStudent: "34",
-    },
-    {
-      slNo: 2,
-      eceName: "Jane Smith",
-      allocateCluster: "67890",
-      totalAllocatedStudent: "Block B",
-      totalCalledStudent: "34",
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   // const blockOptions = {
   //   "District 1": ["Block A", "Block B"],
@@ -120,12 +105,22 @@ const FeedbackReport = () => {
   const handleBlockChange = (e) => {
     setData([]);
     setSelectedBlock(e.target.value);
-    if (e.target.value) {
+  };
+
+  useEffect(() => {
+    if (
+      selectedYear &&
+      selectedMonth &&
+      selectedDistrict &&
+      selectedBlock &&
+      activeTab
+    ) {
       const body = {
         year: selectedYear,
         month: selectedMonth,
         district: selectedDistrict,
         block: selectedBlock,
+        biweek: activeTab,
       };
       getConsultantFeedbackReport(body)
         .then((res) => {
@@ -137,7 +132,7 @@ const FeedbackReport = () => {
           console.error("Error while getting data------>", error);
         });
     }
-  };
+  }, [activeTab, selectedBlock]);
 
   return (
     <div>
@@ -303,52 +298,64 @@ const FeedbackReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((row) => (
-                <tr key={row.slNo}>
+              {data.map((row, index) => (
+                <tr key={index}>
                   <td
                     style={{
                       padding: "10px",
-                      textAlign: "left",
+                      // textAlign: "left",
                       borderBottom: "1px solid #ddd",
                     }}
                   >
-                    {row.slNo}
+                    {index + 1}
                   </td>
                   <td
                     style={{
                       padding: "10px",
-                      textAlign: "left",
+                      // textAlign: "left",
                       borderBottom: "1px solid #ddd",
                     }}
                   >
-                    {row.eceName}
+                    {row.consultantName}
                   </td>
                   <td
                     style={{
                       padding: "10px",
-                      textAlign: "left",
                       borderBottom: "1px solid #ddd",
                     }}
                   >
-                    {row.allocateCluster}
+                    <ul style={{ margin: 0, paddingLeft: "20px" }}>
+                      {" "}
+                      {/* Add bullets */}
+                      {Array.from(
+                        new Set(
+                          row.allocatedCluster?.map((item) => item.cluster)
+                        )
+                      ).map((uniqueCluster, index) => (
+                        <li key={index} style={{ listStyleType: "disc" }}>
+                          {uniqueCluster}
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "center",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {row.totalAllocated}
                   </td>
                   <td
                     style={{
                       padding: "10px",
-                      textAlign: "left",
+                      textAlign: "center",
                       borderBottom: "1px solid #ddd",
                     }}
                   >
-                    {row.totalAllocatedStudent}
-                  </td>
-                  <td
-                    style={{
-                      padding: "10px",
-                      textAlign: "left",
-                      borderBottom: "1px solid #ddd",
-                    }}
-                  >
-                    {row.totalCalledStudent}
+                    {row.totalCalled}
                   </td>
                 </tr>
               ))}

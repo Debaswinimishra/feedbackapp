@@ -528,9 +528,11 @@ const StudentFeedback = () => {
             </button>
           )}
       </div>
-      <div style={{ marginLeft: "90%", padding: "20px", marginTop: "-25%" }}>
-        <button>Request Edit</button>
-      </div>
+      {/* {selectedStudent ? (
+        <div style={{ marginLeft: "90%", padding: "20px", marginTop: "-25%" }}>
+          <button>Request Edit</button>
+        </div>
+      ) : null} */}
     </div>
   );
 };
