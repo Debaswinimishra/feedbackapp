@@ -323,10 +323,43 @@ const StudentFeedback = () => {
     }
   };
 
-  console.log("answers----------->", answers);
+  console.log("selectedStudent--------->", selectedStudent);
+
+  const requestStudentEdit = () => {
+    if (!selectedStudent) {
+      alert("Please choose a student whose data you want to edit!");
+    } else {
+      const body = {};
+      requestEditToAdmin(body)
+        .then((res) => {
+          if (res.status === 200 || res.status === 201) {
+            console.log("res.data---------->", res.data);
+            alert(
+              "Edit request successfully sent. Once approved, you will be notified by the admin."
+            );
+          } else {
+            console.log("res.status received---------->", res.status);
+            alert(
+              "Sorry, the edit request could not be sent. Please contact admin!"
+            );
+          }
+        })
+        .catch((error) => {
+          console.error(
+            "The error encountered while requesting edit---->",
+            error
+          );
+          alert(
+            "Something went wrong! Please try again later or contact the admin !"
+          );
+        });
+    }
+  };
+
+  //-----------------------------------------------------------------------------
 
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <div style={styles.container}>
         <h2 style={styles.userIdText}>User ID: {userId}</h2>
         <div style={styles.dropdownContainer}>
@@ -528,6 +561,9 @@ const StudentFeedback = () => {
             </button>
           )}
       </div>
+      <div style={styles.editButton} onClick={requestStudentEdit}>
+        <button>Edit Student</button>
+      </div>
       {/* {selectedStudent ? (
         <div style={{ marginLeft: "90%", padding: "20px", marginTop: "-25%" }}>
           <button>Request Edit</button>
@@ -538,6 +574,9 @@ const StudentFeedback = () => {
 };
 
 const styles = {
+  editButton: {
+    marginRight: "5%",
+  },
   container: {
     display: "flex",
     flexDirection: "column",
@@ -545,7 +584,7 @@ const styles = {
     justifyContent: "center",
     padding: "20px",
     fontFamily: "'Arial', sans-serif",
-    maxWidth: "400px",
+    minWidth: "400px",
     margin: "0 auto",
     boxShadow:
       "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px",
