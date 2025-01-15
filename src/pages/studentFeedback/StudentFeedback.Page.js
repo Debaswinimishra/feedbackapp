@@ -8,6 +8,17 @@ import {
   getAllocatedClusters,
   requestEditToAdmin,
 } from "./StudentFeedback.Api";
+import {
+  Button,
+  Modal,
+  Box,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Grid,
+} from "@mui/material";
 
 const StudentFeedback = () => {
   const currentYear = new Date().getFullYear();
@@ -26,6 +37,15 @@ const StudentFeedback = () => {
   const [answers, setAnswers] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState("");
   const [studentOptions, setStudentOptions] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [studentEditData, setStudentEditData] = useState({
+    oldName: "",
+    newName: "",
+    oldClass: "",
+    newClass: "",
+    oldUsertype: "",
+    newUsertype: "",
+  });
 
   const userId = localStorage.getItem("userid"); //This is only my consultantId
   const username = localStorage.getItem("username");
@@ -167,6 +187,7 @@ const StudentFeedback = () => {
   };
 
   const handleStudentChange = (e) => {
+    //
     if (e.target.value) {
       setSelectedStudent(e.target.value);
       setGkQuestions([]);
@@ -186,7 +207,19 @@ const StudentFeedback = () => {
     }
   };
 
-  const requestEdit = () => {
+  const closeModal = () => {
+    setModalOpen(false);
+    setStudentEditData({
+      oldName: "",
+      newName: "",
+      oldClass: "",
+      newClass: "",
+      oldUsertype: "",
+      newUsertype: "",
+    });
+  };
+
+  const requestEdit = (item) => {
     requestEditToAdmin()
       .then((res) => {
         if (res.status === 200) {
@@ -252,8 +285,6 @@ const StudentFeedback = () => {
   const studentName = studentOptions?.filter(
     (item) => item.student_id === selectedStudent
   );
-
-  console.log("studentName--------->", studentName);
 
   const handleSubmit = () => {
     const allAnswered = answers.length === gkQuestions?.length;
@@ -323,36 +354,56 @@ const StudentFeedback = () => {
     }
   };
 
-  console.log("selectedStudent--------->", selectedStudent);
-
-  const requestStudentEdit = () => {
+  const  requestStudentEdit = (item) => {
     if (!selectedStudent) {
       alert("Please choose a student whose data you want to edit!");
     } else {
+      setModalOpen(true);
+      setStudentEditData({
+        oldName: studentName[0].student_name,
+        newName: item.studentName,
+        oldClass: selectedClass,
+        newClass: item.class,
+        // oldUsertype: item.usertype,
+        // newUsertype: item.usertype,
+      });
       const body = {};
-      requestEditToAdmin(body)
-        .then((res) => {
-          if (res.status === 200 || res.status === 201) {
-            console.log("res.data---------->", res.data);
-            alert(
-              "Edit request successfully sent. Once approved, you will be notified by the admin."
-            );
-          } else {
-            console.log("res.status received---------->", res.status);
-            alert(
-              "Sorry, the edit request could not be sent. Please contact admin!"
-            );
-          }
-        })
-        .catch((error) => {
-          console.error(
-            "The error encountered while requesting edit---->",
-            error
-          );
-          alert(
-            "Something went wrong! Please try again later or contact the admin !"
-          );
-        });
+      // requestEditToAdmin(body)
+      //   .then((res) => {
+      //     if (res.status === 200 || res.status === 201) {
+      //       console.log("res.data---------->", res.data);
+      //       alert(
+      //         "Edit request successfully sent. Once approved, you will be notified by the admin."
+      //       );
+      //     } else {
+      //       console.log("res.status received---------->", res.status);
+      //       alert(
+      //         "Sorry, the edit request could not be sent. Please contact admin!"
+      //       );
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(
+      //       "The error encountered while requesting edit---->",
+      //       error
+      //     );
+      //     alert(
+      //       "Something went wrong! Please try again later or contact the admin !"
+      //     );
+      //   });
+    }
+  };
+
+  const handleEditStudentData = () => {
+    if (
+      studentEditData.newName === studentEditData.oldName &&
+      studentEditData.newClass === studentEditData.oldClass
+    ) {
+      alert("No change has been made to edit!");
+      return;
+    } else {
+      console.log("Saving updated student data", studentEditData);
+      closeModal();
     }
   };
 
@@ -561,21 +612,146 @@ const StudentFeedback = () => {
             </button>
           )}
       </div>
-      <div style={styles.editButton} onClick={requestStudentEdit}>
-        <button>Edit Student</button>
-      </div>
-      {/* {selectedStudent ? (
-        <div style={{ marginLeft: "90%", padding: "20px", marginTop: "-25%" }}>
-          <button>Request Edit</button>
+      {selectedStudent ? (
+        <div
+          style={styles.editButton}
+          onClick={() =>
+            requestStudentEdit({
+              studentName: studentName[0].student_name,
+              class: selectedClass,
+            })
+          }
+        >
+          <Button variant="contained">Edit Student</Button>
         </div>
-      ) : null} */}
+      ) : null}
+
+      <Modal open={modalOpen} onClose={closeModal}>
+        <Box sx={styles.modalUI}>
+          <FormControl
+            size="small"
+            style={{ width: "100%", marginLeft: "20%" }}
+          >
+            <Grid container spacing={2} style={{ marginTop: 20 }}>
+              <Grid item xs={6} md={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="Old Name"
+                  variant="outlined"
+                  value={studentEditData?.oldName}
+                  disabled
+                />
+              </Grid>
+            </Grid>
+          </FormControl>
+          <FormControl
+            size="small"
+            style={{ width: "100%", marginLeft: "20%" }}
+          >
+            <Grid container spacing={2} style={{ marginTop: 15 }}>
+              <Grid item xs={6} md={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="New Name"
+                  variant="outlined"
+                  value={studentEditData?.newName}
+                  onChange={(e) =>
+                    setStudentEditData({
+                      ...studentEditData,
+                      newName: e.target.value,
+                    })
+                  }
+                />
+              </Grid>
+            </Grid>
+          </FormControl>
+          <FormControl
+            size="small"
+            style={{ width: "100%", marginLeft: "20%" }}
+          >
+            <Grid container spacing={2} style={{ marginTop: 15 }}>
+              <Grid item xs={6} md={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="Old Class"
+                  variant="outlined"
+                  value={studentEditData?.oldClass}
+                  disabled
+                />
+              </Grid>
+            </Grid>
+          </FormControl>
+          <FormControl
+            size="small"
+            style={{ width: "100%", marginLeft: "20%" }}
+          >
+            <Grid container spacing={2} style={{ marginTop: 15 }}>
+              <Grid item xs={6} md={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="New Class"
+                  variant="outlined"
+                  value={studentEditData?.newClass}
+                  onChange={(e) =>
+                    setStudentEditData({
+                      ...studentEditData,
+                      newClass: e.target.value,
+                    })
+                  }
+                  type="number"
+                />
+              </Grid>
+            </Grid>
+          </FormControl>
+
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <Button
+              variant="contained"
+              sx={{
+                width: 70,
+                marginTop: 2,
+                marginBottom: 1,
+                marginRight: 1,
+              }}
+              onClick={closeModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                width: 70,
+                marginTop: 2,
+                marginBottom: 1,
+                marginRight: 1,
+              }}
+              onClick={handleEditStudentData}
+            >
+              Save
+            </Button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
 
 const styles = {
+  modalUI: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  },
+
   editButton: {
     marginRight: "5%",
+    marginTop: "35%",
   },
   container: {
     display: "flex",
