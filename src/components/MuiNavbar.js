@@ -16,16 +16,17 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { logout } from "../pages/login/Login.Slice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function MuiNavbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -35,6 +36,10 @@ function MuiNavbar() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const moveBack = () => {
+    navigate("/home");
   };
 
   const handleLogout = () => {
@@ -88,7 +93,18 @@ function MuiNavbar() {
           <Stack direction="row" spacing={2}>
             {/* <div className="mis-title1">MIS</div> */}
             <div className="mis-title1" style={{ color: "black" }}>
-              <b>Parents Response</b>
+              <b>
+                {location.pathname !== "/home" ? (
+                  <Button onClick={moveBack}>
+                    <ArrowBackIcon />
+                  </Button>
+                ) : null}
+                {location.pathname === "/home" ? (
+                  <p>Student Feedback</p>
+                ) : (
+                  "EC Report"
+                )}
+              </b>
             </div>
           </Stack>
         </Typography>
@@ -123,27 +139,30 @@ function MuiNavbar() {
             "aria-labelledby": "userprofile-button",
           }}
         >
-          <MenuItem onClick={handleClose}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              spacing={2}
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <IconButton
-                size="small"
-                edge="start"
-                color="inherit"
-                aria-label="logo"
+          {location.pathname === "/feedbackReport" ? null : (
+            <MenuItem onClick={handleClose}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                spacing={2}
+                sx={{ display: "flex", alignItems: "center" }}
               >
-                <AssessmentIcon />
-              </IconButton>
-              <Typography component="div" onClick={handleSaveClick}>
-                Report
-              </Typography>
-            </Stack>
-          </MenuItem>
+                <IconButton
+                  size="small"
+                  edge="start"
+                  color="inherit"
+                  aria-label="logo"
+                >
+                  <AssessmentIcon />
+                </IconButton>
+
+                <Typography component="div" onClick={handleSaveClick}>
+                  Report
+                </Typography>
+              </Stack>
+            </MenuItem>
+          )}
 
           <MenuItem onClick={handleClose}>
             <Stack
