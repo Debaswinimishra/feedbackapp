@@ -354,7 +354,7 @@ const StudentFeedback = () => {
     }
   };
 
-  const  requestStudentEdit = (item) => {
+  const requestStudentEdit = (item) => {
     if (!selectedStudent) {
       alert("Please choose a student whose data you want to edit!");
     } else {
@@ -364,8 +364,8 @@ const StudentFeedback = () => {
         newName: item.studentName,
         oldClass: selectedClass,
         newClass: item.class,
-        // oldUsertype: item.usertype,
-        // newUsertype: item.usertype,
+        oldUsertype: studentName[0].whatsapp_user,
+        newUsertype: item.usertype,
       });
       const body = {};
       // requestEditToAdmin(body)
@@ -406,6 +406,9 @@ const StudentFeedback = () => {
       closeModal();
     }
   };
+
+  console.log("studentName--------->", studentName);
+  console.log("studentEditData--------->", studentEditData);
 
   //-----------------------------------------------------------------------------
 
@@ -619,6 +622,7 @@ const StudentFeedback = () => {
             requestStudentEdit({
               studentName: studentName[0].student_name,
               class: selectedClass,
+              usertype: studentName[0].whatsapp_user,
             })
           }
         >
@@ -700,6 +704,52 @@ const StudentFeedback = () => {
                   }
                   type="number"
                 />
+              </Grid>
+            </Grid>
+          </FormControl>
+
+          <FormControl
+            size="small"
+            style={{ width: "100%", marginLeft: "20%" }}
+          >
+            <Grid container spacing={2} style={{ marginTop: 15 }}>
+              <Grid item xs={6} md={6}>
+                <TextField
+                  id="outlined-basic"
+                  label="Is Whatsapp User"
+                  variant="outlined"
+                  value={studentEditData?.oldUsertype}
+                  disabled
+                />
+              </Grid>
+            </Grid>
+          </FormControl>
+          <FormControl
+            size="small"
+            style={{ width: "100%", marginLeft: "20%" }}
+          >
+            <Grid container spacing={2} style={{ marginTop: 15 }}>
+              <Grid item xs={6} md={6}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel id="whatsapp-user-select-label">
+                    Is Whatsapp user
+                  </InputLabel>
+                  <Select
+                    labelId="whatsapp-user-select-label"
+                    id="whatsapp-user-select"
+                    value={studentEditData.newUsertype}
+                    onChange={(e) =>
+                      setStudentEditData({
+                        ...studentEditData,
+                        newUsertype: e.target.value,
+                      })
+                    }
+                    label="Is Whatsapp user"
+                  >
+                    <MenuItem value={true}>True</MenuItem>
+                    <MenuItem value={false}>False</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
           </FormControl>
