@@ -19,6 +19,8 @@ import {
   InputLabel,
   Grid,
 } from "@mui/material";
+import { authenticationAPI, dataAPI } from "../../api/api";
+import { Height } from "@mui/icons-material";
 
 const StudentFeedback = () => {
   const currentYear = new Date().getFullYear();
@@ -319,6 +321,7 @@ const StudentFeedback = () => {
           cluster: selectedCluster,
           district: selectedClusterData[0]?.district,
           block: selectedClusterData[0]?.block,
+          feedbackTimeSpent: 0,
         };
         console.log("body sent-------->", body);
         saveFeedback(body)
@@ -395,6 +398,7 @@ const StudentFeedback = () => {
   };
 
   const handleEditStudentData = () => {
+    console.log("studentEditData-------------->", studentEditData);
     if (
       studentEditData.newName === studentEditData.oldName &&
       studentEditData.newClass === studentEditData.oldClass
@@ -402,8 +406,38 @@ const StudentFeedback = () => {
       alert("No change has been made to edit!");
       return;
     } else {
-      console.log("Saving updated student data", studentEditData);
-      closeModal();
+      const body = {
+        year: selectedYear,
+        month: selectedMonth,
+        biweek: activeTab,
+        consultantId: userId,
+        consultantName: username,
+        whatsapp_user: studentEditData?.newUsertype,
+        student_id: studentName[0]?.student_id,
+        student_name: studentEditData?.newName,
+        class: studentEditData?.newClass,
+        school_name: selectedSchool,
+        cluster: selectedCluster,
+        // block,
+        // district,
+        requestedStatus: "requested",
+      };
+
+      console.log("body sent---------->", body);
+      dataAPI
+        .post(`/saveParentsFeedbackRequested`, body)
+        .then((res) => {
+          if (res.status === 200 || res.status === 201) {
+            alert("Request successfully sent. Please wait until approval !");
+            closeModal();
+          } else {
+            alert("Sorry, couldn't send edit request!");
+          }
+        })
+        .catch((error) => {
+          console.error("The error----------->", error);
+          alert("Sorry, couldn't send edit request!");
+        });
     }
   };
 
@@ -793,6 +827,7 @@ const styles = {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 400,
+    height: "60%",
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,

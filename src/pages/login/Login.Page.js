@@ -71,11 +71,11 @@ function LoginPage() {
         const response = await dispatch(authenticateUserThunk(user));
         console.log("Full response object: ", response); // Log the entire response
 
-        if (response.payload.length > 0) {
+        if (response?.payload.length > 0) {
           console.log("if");
           showAlert("Login successful", "success");
           // Perform further actions, like redirecting the user
-        } else if (response.payload.length == 0) {
+        } else if (response?.payload.length == 0) {
           console.log("else IF");
           showAlert(response.message || "Invalid userid/ password", "error");
         } else {
