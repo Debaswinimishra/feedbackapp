@@ -86,6 +86,34 @@ function MuiNavbar() {
     }
   };
 
+  const handleSave2Click = async () => {
+    const result = await Swal.fire({
+      title: "Enter Password!",
+      input: "text",
+      inputPlaceholder: "Enter your password.",
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off",
+      },
+      showCancelButton: true,
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Submit",
+      confirmButtonColor: "#3085d6",
+      inputValidator: (value) => {
+        if (!value) {
+          return "Please enter the password!";
+        } else if (value !== "tHINKZONEcda-11") {
+          return "Password is incorrect!";
+        }
+      },
+    });
+
+    if (result.isConfirmed) {
+      Swal.fire("Success!", "Successfully Verified.", "success");
+      navigate("/studentReport");
+    }
+  };
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#e0f7fa" }}>
       <Toolbar>
@@ -158,7 +186,31 @@ function MuiNavbar() {
                 </IconButton>
 
                 <Typography component="div" onClick={handleSaveClick}>
-                  Report
+                  Allocation Report
+                </Typography>
+              </Stack>
+            </MenuItem>
+          )}
+          {location.pathname === "/studentReport" ? null : (
+            <MenuItem onClick={handleClose}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                spacing={2}
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <IconButton
+                  size="small"
+                  edge="start"
+                  color="inherit"
+                  aria-label="logo"
+                >
+                  <AssessmentIcon />
+                </IconButton>
+
+                <Typography component="div" onClick={handleSave2Click}>
+                  Student Report
                 </Typography>
               </Stack>
             </MenuItem>

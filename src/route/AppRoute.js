@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoginPage from "../pages/login/Login.Page";
 import StudentFeedback from "../pages/studentFeedback/StudentFeedback.Page";
 import FeedbackReport from "../pages/feedbackReport/FeedbackReport.Page";
+import StudentReport from "../pages/studentReport/StudentReport.Page";
 
 import { Version } from "../api/api";
 
@@ -27,6 +28,7 @@ function AppRoute({ loggedin }) {
           <Route exact path="/" element={<StudentFeedback />} />
           <Route path="/home" element={<StudentFeedback />} />
           <Route path="/feedbackReport" element={<FeedbackReport />} />
+          <Route path="/studentReport" element={<StudentReport />} />
         </>
       )}
 
