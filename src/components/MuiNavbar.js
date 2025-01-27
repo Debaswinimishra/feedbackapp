@@ -215,7 +215,7 @@ function MuiNavbar() {
                 </IconButton>
 
                 <Typography component="div" onClick={handleSave2Click}>
-                  Student Report
+                  Timespent Report
                 </Typography>
               </Stack>
             </MenuItem>
