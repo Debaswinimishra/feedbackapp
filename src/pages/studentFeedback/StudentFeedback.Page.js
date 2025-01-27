@@ -240,6 +240,8 @@ const StudentFeedback = () => {
     (item) => item?.cluster === selectedCluster
   );
 
+  console.log("studentOptions----------->", studentOptions);
+
   const studentsForFeedback = studentOptions?.filter(
     (item) => item?.feedbackStatus === "incomplete"
   );
@@ -322,6 +324,7 @@ const StudentFeedback = () => {
           district: selectedClusterData[0]?.district,
           block: selectedClusterData[0]?.block,
           feedbackTimeSpent: 0,
+          whatsapp_user: studentName[0]?.whatsapp_user,
         };
         console.log("body sent-------->", body);
         saveFeedback(body)
@@ -583,7 +586,7 @@ const StudentFeedback = () => {
                 onChange={handleStudentChange}
               >
                 <option value="">--Select Student--</option>
-                {studentsForFeedback.map((student, index) => (
+                {studentOptions.map((student, index) => (
                   <option key={index} value={student.student_id}>
                     {student.student_name}
                   </option>
@@ -597,52 +600,55 @@ const StudentFeedback = () => {
           </div>
         )}
 
-        {selectedYear &&
-          selectedMonth &&
-          selectedClass &&
-          selectedStudent &&
-          gkQuestions.length > 0 && (
-            <div style={styles.questionsContainer}>
-              {gkQuestions.map((question, index) => (
-                <div key={index} style={styles.question}>
-                  <p style={styles.questionText}>
-                    {index + 1}. {question?.question}
-                  </p>
-                  <div style={styles.radioGroup}>
-                    <label style={styles.radioLabel}>
-                      <input
-                        type="radio"
-                        name={`question-${question.questionOrder}`}
-                        value="yes"
-                        onChange={() =>
-                          handleAnswerChange(question.questionOrder, "yes")
-                        }
-                        style={styles.radioInput}
-                      />{" "}
-                      Yes
-                    </label>
-                    <label style={styles.radioLabel}>
-                      <input
-                        type="radio"
-                        name={`question-${question.questionOrder}`}
-                        value="no"
-                        onChange={() =>
-                          handleAnswerChange(question.questionOrder, "no")
-                        }
-                        style={styles.radioInput}
-                      />
-                      No
-                    </label>
-                  </div>
+        {selectedStudent &&
+        studentName[0]?.feedbackStatus === "incomplete" &&
+        gkQuestions.length > 0 ? (
+          <div style={styles.questionsContainer}>
+            {gkQuestions.map((question, index) => (
+              <div key={index} style={styles.question}>
+                <p style={styles.questionText}>
+                  {index + 1}. {question?.question}
+                </p>
+                <div style={styles.radioGroup}>
+                  <label style={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name={`question-${question.questionOrder}`}
+                      value="yes"
+                      onChange={() =>
+                        handleAnswerChange(question.questionOrder, "yes")
+                      }
+                      style={styles.radioInput}
+                    />{" "}
+                    Yes
+                  </label>
+                  <label style={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name={`question-${question.questionOrder}`}
+                      value="no"
+                      onChange={() =>
+                        handleAnswerChange(question.questionOrder, "no")
+                      }
+                      style={styles.radioInput}
+                    />
+                    No
+                  </label>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
+        ) : selectedStudent && studentName[0]?.feedbackStatus === "complete" ? (
+          <div style={{ maxWidth: "270px", marginTop: "10px" }}>
+            <h4>The feedback for this student has already been submitted</h4>
+          </div>
+        ) : null}
 
         {selectedYear &&
           selectedMonth &&
           selectedClass &&
           selectedStudent &&
+          studentName[0]?.feedbackStatus === "incomplete" &&
           gkQuestions.length > 0 && (
             <button style={styles.submitButton} onClick={handleSubmit}>
               Submit Feedback
