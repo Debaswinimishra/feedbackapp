@@ -736,13 +736,22 @@ const StudentFeedback = () => {
                   label="New Class"
                   variant="outlined"
                   value={studentEditData?.newClass}
-                  onChange={(e) =>
-                    setStudentEditData({
-                      ...studentEditData,
-                      newClass: e.target.value,
-                    })
-                  }
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
+
+                    if (value >= 1 && value <= 10) {
+                      setStudentEditData({
+                        ...studentEditData,
+                        newClass: value,
+                      });
+                    }
+                  }}
                   type="number"
+                  inputProps={{
+                    min: 1,
+                    max: 10,
+                  }}
+                  style={{ width: "170px" }}
                 />
               </Grid>
             </Grid>

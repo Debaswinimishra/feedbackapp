@@ -129,6 +129,8 @@ function MuiNavbar() {
                 ) : null}
                 {location.pathname === "/home" ? (
                   <p>Student Feedback</p>
+                ) : location.pathname === "/studentReport" ? (
+                  "Time Spent Report"
                 ) : (
                   "EC Report"
                 )}
