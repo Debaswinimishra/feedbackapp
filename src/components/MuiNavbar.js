@@ -114,6 +114,8 @@ function MuiNavbar() {
     }
   };
 
+  console.log("location.pathname------------>", location.pathname);
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#e0f7fa" }}>
       <Toolbar>
@@ -122,12 +124,13 @@ function MuiNavbar() {
             {/* <div className="mis-title1">MIS</div> */}
             <div className="mis-title1" style={{ color: "black" }}>
               <b>
-                {location.pathname !== "/home" ? (
+                {location.pathname === "/feedbackReport" ||
+                location.pathname === "/studentReport" ? (
                   <Button onClick={moveBack}>
                     <ArrowBackIcon />
                   </Button>
                 ) : null}
-                {location.pathname === "/home" ? (
+                {location.pathname === "/home" || location.pathname === "/" ? (
                   <p>Student Feedback</p>
                 ) : location.pathname === "/studentReport" ? (
                   "Time Spent Report"
