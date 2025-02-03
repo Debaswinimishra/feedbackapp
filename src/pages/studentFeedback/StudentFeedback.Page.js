@@ -321,8 +321,10 @@ const StudentFeedback = () => {
           class: parseInt(selectedClass),
           school_name: selectedSchool,
           cluster: selectedCluster,
-          district: selectedClusterData[0]?.district,
-          block: selectedClusterData[0]?.block,
+          block: studentName[0]?.block,
+          district: studentName[0]?.district,
+          parents_name: studentName[0]?.parents_name,
+          phone_number: studentName[0]?.phone_number,
           feedbackTimeSpent: 0,
           whatsapp_user: studentName[0]?.whatsapp_user,
         };
@@ -417,13 +419,15 @@ const StudentFeedback = () => {
         consultantName: username,
         whatsapp_user: studentEditData?.newUsertype,
         student_id: studentName[0]?.student_id,
-        student_name: studentEditData?.newName,
+        student_name: studentEditData?.newName.trim(),
         class: studentEditData?.newClass,
         school_name: selectedSchool,
         cluster: selectedCluster,
-        // block,
-        // district,
+        block: studentName[0]?.block,
+        district: studentName[0]?.district,
         requestedStatus: "requested",
+        parents_name: studentName[0]?.parents_name,
+        phone_number: studentName[0]?.phone_number,
       };
 
       console.log("body sent---------->", body);
@@ -446,6 +450,8 @@ const StudentFeedback = () => {
 
   console.log("studentName--------->", studentName);
   console.log("studentEditData--------->", studentEditData);
+  console.log("selectedClusterData------------>", selectedClusterData);
+  console.log("clusterOptions----------->", clusterOptions);
 
   //-----------------------------------------------------------------------------
 
